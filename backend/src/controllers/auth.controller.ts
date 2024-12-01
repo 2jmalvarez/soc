@@ -1,14 +1,18 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { create, findOne } from "../models/user.model";
+import UserModel from "../models/user.model";
 
 export const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await create({ name, email, password: hashedPassword });
+    const user = await UserModel.create({
+      name,
+      email,
+      password: hashedPassword,
+    });
     res.status(201).json(user);
   } catch (error) {
     console.log({ error });
@@ -19,7 +23,7 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-    const user = await findOne({ email });
+    const user = await UserModel.findOne({ email });
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       res.status(401).json({ message: "Credenciales inválidas" });

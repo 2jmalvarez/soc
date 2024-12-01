@@ -11,7 +11,6 @@ export const authenticate = (
   next: NextFunction
 ): void => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
-  console.log({ token });
 
   if (!token) {
     res.status(401).json({ message: "No autorizado" });

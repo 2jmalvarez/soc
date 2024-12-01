@@ -1,17 +1,11 @@
 import { Request, Response } from "express";
-import {
-  create,
-  deleted,
-  findAllByPatient,
-  findOneById,
-  update,
-} from "../models/observation.model";
+import ObservationModel from "../models/observation.model";
 
 // Lista las observaciones de un paciente
 export const getObservations = async (req: Request, res: Response) => {
   const { id: patientId } = req.params;
   try {
-    const observations = await findAllByPatient(+patientId);
+    const observations = await ObservationModel.findAllByPatient(+patientId);
     res.status(200).json(observations);
   } catch (error) {
     res
@@ -25,7 +19,7 @@ export const addObservation = async (req: Request, res: Response) => {
   const { id: patientId } = req.params;
   const { code, value, date } = req.body;
   try {
-    const observation = await create({
+    const observation = await ObservationModel.create({
       patientId: +patientId,
       code,
       value,
@@ -42,12 +36,12 @@ export const updateObservation = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { code, value, date } = req.body;
   try {
-    const observation = await findOneById(+id);
+    const observation = await ObservationModel.findOneById(+id);
     if (!observation) {
       res.status(404).json({ message: "Observación no encontrada" });
       return;
     }
-    await update({
+    await ObservationModel.update({
       id: +id,
       code,
       value,
@@ -66,12 +60,12 @@ export const updateObservation = async (req: Request, res: Response) => {
 export const deleteObservation = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const observation = await findOneById(+id);
+    const observation = await ObservationModel.findOneById(+id);
     if (!observation) {
       res.status(404).json({ message: "Observación no encontrada" });
       return;
     }
-    await deleted(+id);
+    await ObservationModel.delete(+id);
     res.status(200).json({ message: "Observación eliminada" });
   } catch (error) {
     res
