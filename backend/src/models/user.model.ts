@@ -1,4 +1,4 @@
-import pool from "../db/db";
+import pool from "../db/postgres";
 
 interface User {
   id: string;
@@ -16,8 +16,9 @@ export async function create({
   const query = `
       INSERT INTO users (name, email, password)
       VALUES ($1, $2, $3)
-      RETURNING id, name, email;
+      RETURNING id, name, email
     `;
+
   const values = [name, email, password];
 
   try {
@@ -30,9 +31,9 @@ export async function create({
 }
 
 // Método para buscar un usuario por su email
-export async function findOne(
-  email: Pick<User, "email">
-): Promise<User | null> {
+export async function findOne({
+  email,
+}: Pick<User, "email">): Promise<User | null> {
   const query = "SELECT * FROM users WHERE email = $1";
   const values = [email];
 

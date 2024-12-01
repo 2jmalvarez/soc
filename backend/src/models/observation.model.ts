@@ -1,4 +1,4 @@
-import pool from "../db/db";
+import pool from "../db/postgres";
 
 interface Observation {
   id: number;

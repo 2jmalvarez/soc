@@ -11,6 +11,9 @@ const pool = new Pool({
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
   port: parseInt(process.env.DB_PORT || "5432"),
+  ssl: {
+    rejectUnauthorized: false, // Esto permite conexiones SSL sin verificar el certificado
+  },
 });
 
 export default pool;
