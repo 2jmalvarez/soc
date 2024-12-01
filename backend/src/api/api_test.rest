@@ -1,0 +1,80 @@
+@baseUrl = http://localhost:3000
+@token = {{Auth.response.body.$.data.token}}
+
+# Rutas de autenticación
+
+### Registro de un usuario nuevo
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "nombre": "Usuario Prueba",
+  "email": "usuario@correo.com",
+  "contraseña": "password123"
+}
+
+---
+
+### Inicio de sesión
+# @name Auth
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "usuario@correo.com",
+  "contraseña": "password123"
+}
+
+---
+
+# Rutas de pacientes
+
+### Obtener todos los pacientes
+GET {{baseUrl}}/patients
+Authorization: Bearer {{token}}
+
+---
+
+### Obtener un paciente por ID
+GET {{baseUrl}}/patients/:id
+Authorization: Bearer {{token}}
+
+---
+
+### Obtener todas las observaciones de un paciente
+GET {{baseUrl}}/patients/:id/observations
+Authorization: Bearer {{token}}
+
+---
+
+### Crear una nueva observación clínica para un paciente
+POST {{baseUrl}}/patients/:id/observations
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "type": "Blood Pressure",
+  "value": "120/80",
+  "unit": "mmHg",
+  "date": "2024-11-29T10:00:00Z"
+}
+
+---
+
+# Rutas de observaciones
+
+### Actualizar una observación existente
+PUT {{baseUrl}}/observations/:id
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "value": "130/85",
+  "unit": "mmHg"
+}
+
+---
+
+### Eliminar una observación
+DELETE {{baseUrl}}/observations/:id
+Authorization: Bearer {{token}}

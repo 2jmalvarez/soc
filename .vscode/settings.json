@@ -1,0 +1,39 @@
+{
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#3c2c9f",
+    "activityBar.background": "#3c2c9f",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#000000",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "commandCenter.border": "#e7e7e799",
+    "sash.hoverBorder": "#3c2c9f",
+    "statusBar.background": "#2d2177",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#3c2c9f",
+    "statusBarItem.remoteBackground": "#2d2177",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#2d2177",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#2d217799",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  },
+  "peacock.color": "#2d2177",
+  "sqltools.connections": [
+    {
+      "pgOptions": {
+        "ssl": {
+          "rejectUnauthorized": true
+        }
+      },
+      "previewLimit": 50,
+      "server": "https://dashboard.render.com/d/dpg-ct5pgbg8fa8c73c06410-a",
+      "driver": "PostgreSQL",
+      "name": "soc-db",
+      "database": "soc_g3kp",
+      "username": "soc_g3kp_user",
+      "password": "iHIczcdVWY3FpSfx062tVUWAnn7jd75B",
+      "connectString": "postgresql://soc_g3kp_user:iHIczcdVWY3FpSfx062tVUWAnn7jd75B@dpg-ct5pgbg8fa8c73c06410-a.frankfurt-postgres.render.com/soc_g3kp"
+    }
+  ]
+}
