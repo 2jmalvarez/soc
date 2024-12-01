@@ -33,9 +33,9 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "name": "Paciente Prueba",
+  "name": "asd",
   "birth_date": "1990-01-01",
-  "gender": "M",
+  "gender": "males",
   "address": "Dirección de prueba"
 }
 
@@ -45,7 +45,7 @@ Authorization: Bearer {{token}}
 
 
 ### Obtener un paciente por ID
-GET {{baseUrl}}/patients/:id
+GET {{baseUrl}}/patients/1
 Authorization: Bearer {{token}}
 
 

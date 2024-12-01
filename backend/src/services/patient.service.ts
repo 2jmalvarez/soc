@@ -1,4 +1,5 @@
 import PatientModel, { Patient } from "../models/patient.model";
+import dayjs from "dayjs";
 
 // Crear paciente
 
@@ -10,7 +11,7 @@ const PatientService = {
       const patientExist = patients.some(
         (p) =>
           p.name === patient.name &&
-          p.birth_date === patient.birth_date &&
+          dayjs(p.birth_date).isSame(dayjs(patient.birth_date), "day") &&
           p.gender === patient.gender
       );
 
@@ -19,9 +20,9 @@ const PatientService = {
       }
 
       return await PatientModel.create(patient);
-    } catch (error) {
-      console.error("Error al crear paciente:", error);
-      throw new Error("Error al crear paciente");
+    } catch (error: any) {
+      console.error("PatientService: Error al crear paciente ", error);
+      throw new Error(error?.message ?? "Error desconocido");
     }
   },
 };

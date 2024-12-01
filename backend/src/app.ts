@@ -3,9 +3,9 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 
-import authRoutes from "./routes/auth.routes";
-import patientRoutes from "./routes/patient.routes";
-import observationRoutes from "./routes/observation.routes";
+import authRoutes from "./routes/auth.route";
+import patientRoutes from "./routes/patient.route";
+import observationRoutes from "./routes/observation.route";
 import errorMiddleware from "./middlewares/error.middleware";
 
 // Crear la aplicación

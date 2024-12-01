@@ -1,4 +1,5 @@
 import pool from "../db/postgres";
+import { DatabaseError } from "../services/error.service";
 
 export interface Patient {
   id: number;
@@ -16,7 +17,7 @@ const PatientModel = {
       return rows;
     } catch (error) {
       console.error("Error fetching patients:", error);
-      throw new Error("Could not fetch patients");
+      throw new DatabaseError("findAll: Could not fetch patients");
     }
   },
 
@@ -27,7 +28,7 @@ const PatientModel = {
       return rows.length > 0 ? rows[0] : null;
     } catch (error) {
       console.error(`Error fetching patient with id ${id}:`, error);
-      throw new Error("Could not fetch patient");
+      throw new DatabaseError("findById: Could not fetch patient");
     }
   },
 
@@ -48,7 +49,7 @@ const PatientModel = {
       return rows[0];
     } catch (error) {
       console.error("Error adding patient:", error);
-      throw new Error("Could not add patient");
+      throw new DatabaseError("create: Could not add patient");
     }
   },
 
@@ -59,7 +60,7 @@ const PatientModel = {
       return (rowCount ?? 0) > 0;
     } catch (error) {
       console.error(`Error deleting patient with id ${id}:`, error);
-      throw new Error("Could not delete patient");
+      throw new DatabaseError("delete: Could not delete patient");
     }
   },
 
@@ -86,7 +87,7 @@ const PatientModel = {
       return rows.length > 0 ? rows[0] : null;
     } catch (error) {
       console.error(`Error updating patient with id ${patient.id}:`, error);
-      throw new Error("Could not update patient");
+      throw new DatabaseError("update: Could not update patient");
     }
   },
 };
