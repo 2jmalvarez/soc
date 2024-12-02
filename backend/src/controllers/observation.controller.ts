@@ -1,75 +1,83 @@
 import { Request, Response } from "express";
 import ObservationModel from "../models/observation.model";
+import RoutesService from "../services/routes.service";
+import { idSchema } from "../types/patient.schema";
+import { baseObservationSchema } from "../types/observation.schema";
+import { NotFoundError } from "../services/error.service";
 
 // Lista las observaciones de un paciente
 export const getObservations = async (req: Request, res: Response) => {
-  const { id: patientId } = req.params;
   try {
+    RoutesService.validationParams(req.params, idSchema);
+    const { id: patientId } = req.params;
+
     const observations = await ObservationModel.findAllByPatient(+patientId);
-    res.status(200).json(observations);
+
+    RoutesService.responseSuccess(res, observations);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error al obtener las observaciones", error });
+    RoutesService.responseError(res, error as any);
   }
 };
 
 // Añade una nueva observación
 export const addObservation = async (req: Request, res: Response) => {
-  const { id: patientId } = req.params;
-  const { code, value, date } = req.body;
   try {
+    RoutesService.validationParams(req.params, idSchema);
+    RoutesService.validationBody(req.body, baseObservationSchema);
+    const { id: patientId } = req.params;
+    const { code, value, date } = req.body;
+
     const observation = await ObservationModel.create({
       patientId: +patientId,
       code,
       value,
       date,
     });
-    res.status(201).json(observation);
+
+    RoutesService.responseSuccess(res, observation, 201);
   } catch (error) {
-    res.status(500).json({ message: "Error al crear la observación", error });
+    RoutesService.responseError(res, error as any);
   }
 };
 
 // Actualiza una observación existente
 export const updateObservation = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { code, value, date } = req.body;
   try {
-    const observation = await ObservationModel.findOneById(+id);
-    if (!observation) {
-      res.status(404).json({ message: "Observación no encontrada" });
-      return;
-    }
+    RoutesService.validationParams(req.params, idSchema);
+    RoutesService.validationBody(req.body, baseObservationSchema);
+    const { id: patientId } = req.params;
+    const { code, value, date } = req.body;
+
+    const observation = await ObservationModel.findOneById(+patientId);
+    if (!observation) throw new NotFoundError("Observación no encontrada");
+
     await ObservationModel.update({
-      id: +id,
+      id: +patientId,
       code,
       value,
       date,
       patientId: observation.patientId,
     });
-    res.status(200).json(observation);
+
+    RoutesService.responseSuccess(res, observation);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error al actualizar la observación", error });
+    RoutesService.responseError(res, error as any);
   }
 };
 
 // Elimina una observación
 export const deleteObservation = async (req: Request, res: Response) => {
-  const { id } = req.params;
   try {
+    RoutesService.validationParams(req.params, idSchema);
+    const { id } = req.params;
+
     const observation = await ObservationModel.findOneById(+id);
-    if (!observation) {
-      res.status(404).json({ message: "Observación no encontrada" });
-      return;
-    }
+    if (!observation) throw new NotFoundError("Observación no encontrada");
+
     await ObservationModel.delete(+id);
-    res.status(200).json({ message: "Observación eliminada" });
+
+    RoutesService.responseSuccess(res, observation);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error al eliminar la observación", error });
+    RoutesService.responseError(res, error as any);
   }
 };
