@@ -3,32 +3,31 @@ import PatientModel, { Patient } from "../models/patient.model";
 import PatientService from "../services/patient.service";
 import { idSchema, patientSchema } from "../types/patient.schema";
 import RoutesService from "../services/routes.service";
+import { NotFoundError } from "../services/error.service";
 
 // Lista todos los pacientes
 export const getAllPatients = async (req: Request, res: Response) => {
   try {
     const patients = await PatientModel.findAll();
-    res.status(200).json(patients);
+    RoutesService.responseSuccess(res, patients);
   } catch (error) {
-    res.status(500).json({ message: "Error al obtener los pacientes", error });
+    RoutesService.responseError(res, error as any);
   }
 };
 
 // Obtiene un paciente por ID
 export const getPatientById = async (req: Request, res: Response) => {
-  const { id } = req.params;
-
   try {
-    if (RoutesService.validationParams(req, res, idSchema)) return;
+    RoutesService.validationParams(req.params, idSchema);
+    const { id } = req.params;
 
     const patient = await PatientModel.findById(+id);
-    if (!patient) {
-      res.status(404).json({ message: "Paciente no encontrado" });
-      return;
-    }
-    res.status(200).json(patient);
+    if (!patient)
+      throw new NotFoundError("Paciente no encontrado con id = " + id);
+
+    RoutesService.responseSuccess(res, patient);
   } catch (error) {
-    res.status(500).json({ message: "Error al obtener el paciente", error });
+    RoutesService.responseError(res, error as any);
   }
 };
 
@@ -46,25 +45,20 @@ export const createPatient = async (req: Request, res: Response) => {
       address,
     });
 
-    res.status(201).json({ data: newPatient });
-  } catch (error: any) {
-    const errorMessage =
-      error.message || "Error desconocido al agregar el paciente";
-
-    res.status(500).json({
-      message: "Error al agregar el paciente: " + errorMessage,
-      error: true,
-    });
+    RoutesService.responseSuccess(res, newPatient, 201);
+  } catch (error) {
+    RoutesService.responseError(res, error as any);
   }
 };
 
 // Editar un paciente
 export const updatePatient = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { name, birth_date, gender, address } = req.body;
   try {
-    if (RoutesService.validationParams(req, res, idSchema)) return;
+    RoutesService.validationParams(req.params, idSchema);
     RoutesService.validationBody(req.body, patientSchema);
+
+    const { id } = req.params;
+    const { name, birth_date, gender, address } = req.body;
 
     const updatedPatient = await PatientModel.update({
       name,
@@ -73,25 +67,25 @@ export const updatePatient = async (req: Request, res: Response) => {
       address,
       id: +id,
     });
-    res.status(201).json(updatedPatient);
+
+    RoutesService.responseSuccess(res, updatedPatient);
   } catch (error) {
-    res.status(500).json({ message: "Error al editar el paciente", error });
+    RoutesService.responseError(res, error as any);
   }
 };
 
 // Elimina un paciente
 export const deletePatient = async (req: Request, res: Response) => {
-  const { id } = req.params;
   try {
-    if (RoutesService.validationParams(req, res, idSchema)) return;
+    RoutesService.validationParams(req.params, idSchema);
+    const { id } = req.params;
 
     const deletedPatient = await PatientModel.delete(+id);
-    if (!deletedPatient) {
-      res.status(404).json({ message: "Paciente no encontrado" });
-      return;
-    }
-    res.status(200).json({ message: "Paciente eliminado" });
+    if (!deletedPatient)
+      throw new NotFoundError("Paciente no encontrado con id = " + id);
+
+    RoutesService.responseSuccess(res, deletedPatient);
   } catch (error) {
-    res.status(500).json({ message: "Error al eliminar el paciente", error });
+    RoutesService.responseError(res, error as any);
   }
 };

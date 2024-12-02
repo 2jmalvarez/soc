@@ -1,5 +1,6 @@
 import PatientModel, { Patient } from "../models/patient.model";
 import dayjs from "dayjs";
+import { ValidationError } from "./error.service";
 
 // Crear paciente
 
@@ -16,13 +17,13 @@ const PatientService = {
       );
 
       if (patientExist) {
-        throw new Error("El paciente ya existe");
+        throw new ValidationError("El paciente ya existe");
       }
 
       return await PatientModel.create(patient);
     } catch (error: any) {
       console.error("PatientService: Error al crear paciente ", error);
-      throw new Error(error?.message ?? "Error desconocido");
+      throw error;
     }
   },
 };

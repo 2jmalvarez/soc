@@ -8,7 +8,7 @@ Content-Type: application/json
 
 {
   "name": "Usuario Prueba",
-  "email": "a@a.com",
+  "email": "a2@a.com",
   "password": "password"
 }
 
@@ -35,7 +35,7 @@ Authorization: Bearer {{token}}
 {
   "name": "asd",
   "birth_date": "1990-01-01",
-  "gender": "males",
+  "gender": "male",
   "address": "Dirección de prueba"
 }
 
@@ -45,7 +45,7 @@ Authorization: Bearer {{token}}
 
 
 ### Obtener un paciente por ID
-GET {{baseUrl}}/patients/1
+GET {{baseUrl}}/patients/100
 Authorization: Bearer {{token}}
 
 
