@@ -9,8 +9,10 @@ export type ObservationType = {
 export type PatientType = {
   id: number;
   name: string;
-  age: number;
-  condition: string;
+  gender: string;
+  birth_date: string;
+  address: string;
+  observations: ObservationType[];
 };
 
 export type StoreType = {

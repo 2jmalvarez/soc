@@ -1,4 +1,5 @@
-import axios from "axios";
+import api from "@/services/api";
+// import axios from "axios";
 import NextAuth, { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -20,11 +21,16 @@ export const authOptions = {
       },
       async authorize(credentials) {
         try {
-          const { data } = await axios.post(`${process.env.API_URL}/login`, {
+          if (!credentials?.email || !credentials?.password)
+            throw new Error("Missing credentials");
+
+          const { data } = await api.post(`/auth/login`, {
             email: credentials?.email,
             password: credentials?.password,
           });
-          return data;
+          if (data?.error) throw new Error("Invalid credentials");
+
+          return data.data;
         } catch {
           throw new Error("Invalid credentials");
         }
@@ -34,17 +40,24 @@ export const authOptions = {
   callbacks: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async jwt({ token, user }: { token: JWT; user?: any }) {
+      // console.log("jwt", { token, user });
+
       if (user) {
         token.accessToken = user.token;
       }
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
+      // console.log("session", { session, token });
+
       if (typeof token.accessToken === "string") {
         session.accessToken = token.accessToken;
       }
       return session;
     },
+  },
+  pages: {
+    signIn: "/auth/signin", // Puedes personalizar la ruta de inicio de sesión si es necesario
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

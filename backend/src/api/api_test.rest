@@ -7,9 +7,9 @@ POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
 {
-  "name": "Usuario Prueba",
-  "email": "a2@a.com",
-  "password": "password"
+  "name": "Usuario Prueba Yo",
+  "email": "2jmalvarez@gmail.com",
+  "password": "2jmalvarez@gmail.com"
 }
 
 ### Inicio de sesión
@@ -18,12 +18,12 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "a@a.com",
-  "password": "password"
+  "email": "2jmalvarez@gmail.com",
+  "password": "2jmalvarez@gmail.com"
 }
 
 ### Almacenar el token de autenticación
-@token = {{Auth.response.body.token}}
+@token = {{Auth.response.body.data.token}}
 
 
 ######### Rutas de pacientes #########

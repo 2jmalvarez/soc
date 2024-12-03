@@ -8,9 +8,13 @@ import { NotFoundError } from "../services/error.service";
 // Lista todos los pacientes
 export const getAllPatients = async (req: Request, res: Response) => {
   try {
+    console.log("getAllPatients");
+
     const patients = await PatientModel.findAll();
     RoutesService.responseSuccess(res, patients);
   } catch (error) {
+    console.log({ error });
+
     RoutesService.responseError(res, error as any);
   }
 };

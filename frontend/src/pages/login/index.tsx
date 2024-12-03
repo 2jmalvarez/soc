@@ -1,16 +1,18 @@
 // frontend/src/pages/index.tsx
+
 import { LoginCard } from "@/components/LoginCard";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+
+// import { useSession } from "next-auth/react";
+// import { useRouter } from "next/router";
 
 const HomePage = () => {
-  const { data: session } = useSession();
-  const router = useRouter();
+  // const { data: session } = useSession();
+  // const router = useRouter();
 
-  if (session) {
-    router.push("/patients"); // Redirige si el usuario está autenticado
-    return null; // Evita renderizar el componente mientras se redirige
-  }
+  // if (session) {
+  //   router.push("/patients"); // Redirige si el usuario está autenticado
+  //   return null; // Evita renderizar el componente mientras se redirige
+  // }
 
   return (
     <div

@@ -16,7 +16,7 @@ const errorMiddleware = (
 
   // Log del error en modo desarrollo
   if (process.env.NODE_ENV !== "production") {
-    console.error(`[Error] ${err.stack || err}`);
+    console.log(`[Error] ${err.stack || err}`);
   }
 
   // Respuesta JSON
