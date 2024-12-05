@@ -1,0 +1,13 @@
+{
+  "name": "soc",
+  "version": "1.0.0",
+  "description": "Sistema de gestión de observaciones clínicas con FHIR",
+  "main": "index.js",
+  "scripts": {
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm run dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

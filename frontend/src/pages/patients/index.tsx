@@ -1,4 +1,3 @@
-import Header from "@/components/Header";
 import api from "@/services/api";
 import { PatientType } from "@/types/dto.type";
 import axios from "axios";
@@ -28,7 +27,6 @@ const fetchPatients = async (accessToken: string) => {
 const PatientsPage = ({ patients }: { patients: PatientType[] }) => {
   return (
     <div>
-      <Header />
       <div className="container mx-auto p-6 pt-20">
         <h1 className="text-2xl font-semibold">Lista de Pacientes</h1>
         <ul className="mt-4">
