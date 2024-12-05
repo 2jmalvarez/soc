@@ -14,7 +14,6 @@ export const authenticate = (
 ): void => {
   try {
     const token = req.header("Authorization")?.replace("Bearer ", "");
-    console.log({ token });
 
     if (!token) throw new UnauthorizedError("No autorizado");
 

@@ -1,3 +1,4 @@
+import ObservationModel from "./../models/observation.model";
 import PatientModel, { Patient } from "../models/patient.model";
 import dayjs from "dayjs";
 import { ValidationError } from "./error.service";
@@ -23,6 +24,16 @@ const PatientService = {
       return await PatientModel.create(patient);
     } catch (error: any) {
       console.error("PatientService: Error al crear paciente ", error);
+      throw error;
+    }
+  },
+  async getObservations(patientId: number) {
+    try {
+      const observations = await ObservationModel.findAllByPatient(patientId);
+      const patient = await PatientModel.findById(patientId);
+      return { ...patient, observations };
+    } catch (error: any) {
+      console.error("PatientService: Error al obtener observaciones ", error);
       throw error;
     }
   },

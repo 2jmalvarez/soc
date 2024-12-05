@@ -4,6 +4,7 @@ import RoutesService from "../services/routes.service";
 import { idSchema } from "../types/patient.schema";
 import { baseObservationSchema } from "../types/observation.schema";
 import { NotFoundError } from "../services/error.service";
+import PatientService from "../services/patient.service";
 
 // Lista las observaciones de un paciente
 export const getObservations = async (req: Request, res: Response) => {
@@ -11,9 +12,11 @@ export const getObservations = async (req: Request, res: Response) => {
     RoutesService.validationParams(req.params, idSchema);
     const { id: patientId } = req.params;
 
-    const observations = await ObservationModel.findAllByPatient(+patientId);
+    const patientObservations = await PatientService.getObservations(
+      +patientId
+    );
 
-    RoutesService.responseSuccess(res, observations);
+    RoutesService.responseSuccess(res, patientObservations);
   } catch (error) {
     RoutesService.responseError(res, error as any);
   }

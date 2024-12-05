@@ -12,6 +12,10 @@ export type PatientType = {
   gender: string;
   birth_date: string;
   address: string;
+  observations: number;
+};
+
+export type PatientObservationsType = PatientType & {
   observations: ObservationType[];
 };
 

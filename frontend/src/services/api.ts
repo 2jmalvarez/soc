@@ -1,3 +1,4 @@
+import { PatientObservationsType, PatientType } from "@/types/dto.type";
 import axios from "axios";
 
 // Importar getSession de NextAuth
@@ -10,7 +11,34 @@ const api = axios.create({
 
 export const fetchPatients = async (accessToken: string) => {
   try {
-    const { data } = await api.get(`/patients`, {
+    const { data } = await api.get<{ data: PatientType[]; error: boolean }>(
+      `/patients`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log({ data: data.data[0] });
+
+    return { data: data.data, error: false }; // Retorna los pacientes y una bandera para el error
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.data?.error === "TokenExpiredError") {
+        console.error("Token expired. Logging out...");
+        return { data: [], error: true }; // Devolvemos una bandera indicando que el token expiró
+      }
+    }
+    return { data: [], error: false }; // Si hubo otro error, devolvemos datos vacíos
+  }
+};
+
+export const fetchObservations = async (accessToken: string, { id = "" }) => {
+  try {
+    const { data } = await api.get<{
+      data: PatientObservationsType;
+      error: boolean;
+    }>(`/patients/${id}/observations`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

@@ -46,7 +46,9 @@ const PatientsPage = ({ patients }: { patients: PatientType[] }) => {
               className="bg-gray-100 p-4 rounded-lg shadow m-4 w-80  "
             >
               <Link href={`/patients/${patient.id}`}>
-                <span className="text-blue-500">{patient.name}</span>
+                <span className="text-blue-500">
+                  {patient.name} ({patient.observations})
+                </span>
               </Link>
               <div className="text-sm text-gray-600">
                 <p>Género: {patient.gender}</p>

@@ -12,7 +12,13 @@ export interface Patient {
 const PatientModel = {
   async findAll(): Promise<Patient[]> {
     try {
-      const query = "SELECT * FROM patients";
+      const query = `
+        SELECT p.*,
+          (
+            SELECT count(*) FROM observations o WHERE o.patient_id = p.id
+          ) as observations 
+        FROM patients p
+      `;
       const { rows } = await pool.query(query);
       return rows;
     } catch (error) {
@@ -23,7 +29,9 @@ const PatientModel = {
 
   async findById(id: number): Promise<Patient | null> {
     try {
-      const query = "SELECT * FROM patients WHERE id = $1";
+      const query = `
+        SELECT p.*
+        FROM patients p WHERE p.id = $1`;
       const { rows } = await pool.query(query, [id]);
       return rows.length > 0 ? rows[0] : null;
     } catch (error) {
