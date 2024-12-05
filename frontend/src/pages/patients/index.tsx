@@ -1,5 +1,5 @@
-import { fetchPatients } from "@/services/api";
-import { PatientType } from "@/types/dto.type";
+import { getPatients } from "@/services/api";
+import { PatientTypeDto } from "@/types/dto.type";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import Link from "next/link";
@@ -17,7 +17,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const { data, error } = await fetchPatients(session.accessToken ?? "");
+  const { data, error } = await getPatients(session.accessToken ?? "");
 
   if (error) {
     // Si el token ha expirado, redirigir al login desde el servidor
@@ -34,7 +34,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-const PatientsPage = ({ patients }: { patients: PatientType[] }) => {
+const PatientsPage = ({ patients }: { patients: PatientTypeDto[] }) => {
   return (
     <div>
       <div className="container mx-auto p-6 pt-20">

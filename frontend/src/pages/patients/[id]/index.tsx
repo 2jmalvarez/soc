@@ -1,7 +1,12 @@
-import { fetchObservations } from "@/services/api";
+// frontend/src/pages/patients/[id].tsx
+import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { Button } from "@/components/ui";
+import { addObservation, getObservations } from "@/services/api";
 import { PatientObservationsType } from "@/types/dto.type";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
+import { useState } from "react";
+import { v4 } from "uuid";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
@@ -22,7 +27,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const { data, error } = await fetchObservations(session.accessToken ?? "", {
+  const { data, error } = await getObservations(session.accessToken ?? "", {
     id,
   });
 
@@ -37,7 +42,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   return {
-    props: { patientObservations: data }, // Pasamos las observaciones obtenidas
+    props: { patientObservations: data }, // Pasamos solo los datos
   };
 };
 
@@ -46,15 +51,149 @@ export default function ObservationsPage({
 }: {
   readonly patientObservations: PatientObservationsType;
 }) {
-  console.log({ patientObservations });
+  const [observations, setObservations] = useState(
+    patientObservations.observations
+  );
+  const [newObservation, setNewObservation] = useState({
+    observation_code: "",
+    value: "",
+    date: "",
+    patient_id: patientObservations.id,
+  });
+  const [cargando, setCargando] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewObservation((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const session = await getSession(); // Obtener la sesión del frontend
+
+    if (!session?.accessToken) {
+      console.error("No access token available");
+      return;
+    }
+
+    try {
+      setCargando(true);
+      const addedObservation = await addObservation(
+        session.accessToken,
+        newObservation
+      ); // Pasando el token
+      if (addedObservation) {
+        setCargando(false);
+        setObservations((prev) => [...prev, addedObservation]);
+        setNewObservation({
+          observation_code: "",
+          value: "",
+          date: "",
+          patient_id: patientObservations.id,
+        });
+      }
+    } catch (error) {
+      console.error("Error adding observation:", error);
+    }
+  };
+
   return (
     <div className="container mx-auto p-6 pt-20">
-      <h1>Observaciones</h1>
-      <ul>
-        {patientObservations.observations.map((pt) => (
-          <li key={pt.id}>{pt.value}</li>
-        ))}
-      </ul>
+      <div className="flex  justify-between">
+        <div>
+          <h1 className="text-2xl font-bold mb-4">
+            Observaciones de
+            <b>{" " + patientObservations.name}</b>
+          </h1>
+          <h2 className="text-xl font-bold mb-2">
+            Lista de Observaciones ({observations.length}){" "}
+          </h2>
+          <ul className="space-y-2">
+            {observations.toReversed().map((obs) => (
+              <li key={v4()} className="p-4 border rounded-md shadow">
+                <p>
+                  <strong>ID:</strong> {obs.id}
+                </p>
+                <p>
+                  <strong>Code:</strong> {obs.observation_code}
+                </p>
+                <p>
+                  <strong>Value:</strong> {obs.value}
+                </p>
+                <p>
+                  <strong>Date:</strong>{" "}
+                  {new Date(obs.date).toLocaleDateString()}
+                </p>
+                <p>
+                  <strong>Patient ID:</strong> {obs.patient_id}
+                </p>
+                <p>
+                  <strong>User ID:</strong> {obs.user_id}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h2 className="text-xl font-bold mt-2">Agregar Nueva Observación</h2>
+          <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+            <div>
+              <label htmlFor="observation_code" className="block font-semibold">
+                Código
+              </label>
+              <input
+                id="observation_code"
+                name="observation_code"
+                type="text"
+                value={newObservation.observation_code}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="value" className="block font-semibold">
+                Valor
+              </label>
+              <input
+                id="value"
+                name="value"
+                type="text"
+                value={newObservation.value}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="date" className="block font-semibold">
+                Fecha
+              </label>
+              <input
+                id="date"
+                name="date"
+                type="date"
+                value={newObservation.date}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </div>
+            <Button
+              disabled={cargando}
+              type="submit"
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              <div className="flex ">
+                <div className="flex text-center ">
+                  {cargando && <LoadingSpinner color="text-white w-4 h-4" />}{" "}
+                  Agregar Observación
+                </div>
+              </div>
+            </Button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

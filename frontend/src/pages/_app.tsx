@@ -2,7 +2,7 @@ import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import "../globals.css";
 import AuthGuard from "../components/AuthGuard";
-import Layout from "@/components/layout";
+import Layout from "@/components/Layout";
 
 const protectedRoutes = ["/patients", "/another-protected-route"]; // Rutas que requieren autenticación
 

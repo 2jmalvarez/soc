@@ -1,9 +1,10 @@
 export type ObservationType = {
   id: number;
-  patientId: number;
-  code: string;
+  observation_code: string;
   value: string;
   date: string;
+  patient_id: number;
+  user_id: number;
 };
 
 export type PatientType = {
@@ -12,11 +13,14 @@ export type PatientType = {
   gender: string;
   birth_date: string;
   address: string;
+};
+
+export type PatientTypeDto = PatientType & {
   observations: number;
 };
 
 export type PatientObservationsType = PatientType & {
-  observations: ObservationType[];
+  observations: ObservationType[]; // Cambia el tipo de observations a ObservationType[]
 };
 
 export type StoreType = {

@@ -10,7 +10,7 @@ export const observationSchema = Joi.object({
 });
 
 export const baseObservationSchema = Joi.object({
-  code: Joi.string().min(3).max(100).required(),
+  observation_code: Joi.string().min(3).max(100).required(),
   value: Joi.string().min(1).max(500).required(),
   date: Joi.date().iso().required(),
 });

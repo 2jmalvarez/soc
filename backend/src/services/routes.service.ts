@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import Joi from "joi";
 import { BodyError, ErrorType, ParamsError } from "./error.service";
 
@@ -21,6 +21,9 @@ const RoutesService = {
   },
   responseSuccess: (res: Response, data: any, status = 200) => {
     res.status(status).json({ data, error: false });
+  },
+  getUserId: (req: any) => {
+    return req.user.id;
   },
 };
 
