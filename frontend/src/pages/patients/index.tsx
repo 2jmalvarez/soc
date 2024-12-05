@@ -61,7 +61,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (!session) {
     return {
       redirect: {
-        destination: "/login", // Redirigir al login si no hay sesión
+        destination: "/", // Redirigir al login si no hay sesión
         permanent: false,
       },
     };
@@ -73,7 +73,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // Si el token ha expirado, redirigir al login desde el servidor
     return {
       redirect: {
-        destination: "/login", // Redirigir al login
+        destination: "/", // Redirigir al login
         permanent: false,
       },
     };

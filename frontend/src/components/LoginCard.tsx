@@ -1,25 +1,34 @@
 // frontend/src/components/LoginCard.tsx
 
+import { LoadingSpinner } from "./LoadingSpinner";
 import { Button, Input } from "./ui";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
 export const LoginCard = () => {
+  const { status } = useSession(); // Hook de NextAuth
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     const result = await signIn("credentials", {
       redirect: false,
       email,
       password,
     });
-    console.log({ result });
+
+    if (result) {
+      setLoading(false);
+    }
+
     if (result?.error) {
       setError(result.error);
     } else {
@@ -67,9 +76,18 @@ export const LoginCard = () => {
           </div>
           <Button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 mt-4"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 mt-4 flex items-center justify-center"
+            disabled={status === "loading" || loading}
           >
-            Log In
+            {status === "loading" ? (
+              <div className="flex ">
+                <LoadingSpinner /> Cargando
+              </div>
+            ) : (
+              <div className="flex ">
+                {loading && <LoadingSpinner />} Ingresar
+              </div>
+            )}
           </Button>
         </form>
       </div>

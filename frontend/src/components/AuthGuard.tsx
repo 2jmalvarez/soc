@@ -1,3 +1,4 @@
+import { LoadingSpinner } from "./LoadingSpinner";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
@@ -16,7 +17,19 @@ const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }, [isLoading, isAuthenticated, router]);
 
   if (isLoading) {
-    return <div>Loading...</div>; // Muestra algo mientras se verifica la sesión
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <LoadingSpinner color="text-sky-500" />
+        <span style={{ marginLeft: "10px" }}>Cargando página...</span>
+      </div>
+    ); // Muestra algo mientras se verifica la sesión
   }
 
   if (!isAuthenticated) {
