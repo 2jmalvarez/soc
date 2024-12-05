@@ -8,6 +8,25 @@ const api = axios.create({
   timeout: 10000, // Tiempo de espera para las solicitudes
 });
 
+export const fetchPatients = async (accessToken: string) => {
+  try {
+    const { data } = await api.get(`/patients`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return { data: data.data, error: false }; // Retorna los pacientes y una bandera para el error
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.data?.error === "TokenExpiredError") {
+        console.error("Token expired. Logging out...");
+        return { data: [], error: true }; // Devolvemos una bandera indicando que el token expiró
+      }
+    }
+    return { data: [], error: false }; // Si hubo otro error, devolvemos datos vacíos
+  }
+};
+
 // api.interceptors.request.use(
 //   (config) => {
 //     const token = localStorage.getItem("token");

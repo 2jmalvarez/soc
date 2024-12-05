@@ -9,7 +9,7 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-blue-500 text-white p-4 z-10 shadow-md">
+    <header className="fixed top-0 left-0 right-0 bg-[#486b74] text-white p-4 z-10 shadow-md">
       <div className="flex items-center justify-between">
         <div className="text-xl font-semibold">
           <Link href="/">
@@ -18,9 +18,9 @@ const Header = () => {
         </div>
         <button
           onClick={handleLogout}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          className="bg-[#e47c61] text-white px-4 py-2 rounded hover:bg-[#ff5e36]"
         >
-          Logout
+          Salir
         </button>
       </div>
     </header>
