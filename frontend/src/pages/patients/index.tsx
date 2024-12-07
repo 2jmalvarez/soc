@@ -1,10 +1,11 @@
+import { PatientCard } from "@/components/patients/Patient";
 import usePatientStore from "@/hooks/useStore";
 import { getPatients } from "@/services/api";
 import { PatientTypeDto } from "@/types/dto.type";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
-import Link from "next/link";
 import { useEffect } from "react";
+import { v4 } from "uuid";
 
 // Obtener la sesión y los pacientes desde el servidor
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -50,28 +51,11 @@ const PatientsPage = ({
     <div>
       <div className="container mx-auto p-6 pt-20">
         <h1 className="text-2xl font-semibold">Lista de Pacientes</h1>
-        <ul className="mt-4 flex flex-wrap">
+        <div className="mt-4 flex flex-wrap">
           {patients.map((patient) => (
-            <li
-              key={patient.id}
-              className="bg-gray-100 p-4 rounded-lg shadow m-4 w-80  "
-            >
-              <Link href={`/patients/${patient.id}`}>
-                <span className="text-blue-500">
-                  {patient.name} ({patient.observations})
-                </span>
-              </Link>
-              <div className="text-sm text-gray-600">
-                <p>Género: {patient.gender}</p>
-                <p>
-                  Fecha de nacimiento:{" "}
-                  {new Date(patient.birth_date).toLocaleDateString()}
-                </p>
-                <p>Dirección: {patient.address}</p>
-              </div>
-            </li>
+            <PatientCard key={v4()} patient={patient} />
           ))}
-        </ul>
+        </div>
       </div>
     </div>
   );

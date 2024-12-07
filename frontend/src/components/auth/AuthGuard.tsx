@@ -8,7 +8,7 @@ const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter();
   const isAuthenticated = !!session; // Si hay sesión, está autenticado
   const isLoading = status === "loading";
-  console.log({ session, status, isAuthenticated });
+  // console.log({ session, status, isAuthenticated });
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {

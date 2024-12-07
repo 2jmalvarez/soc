@@ -1,6 +1,7 @@
 // frontend/src/pages/patients/[id].tsx
 import { CardObservation } from "@/components/observations/CardObservation";
 import { NewObservationModal } from "@/components/observations/NewObservationModal";
+import { PatientCard } from "@/components/patients/Patient";
 import usePatientStore from "@/hooks/useStore";
 import { getObservations } from "@/services/api";
 import { PatientObservationsType } from "@/types/dto.type";
@@ -58,10 +59,14 @@ export default function ObservationsPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patientObservationsDto]);
 
+  const { observations, ...patient } = patientObservations;
   return (
     <div className="container mx-auto p-6 pt-20">
       <div className="flex  justify-between">
         <div className="w-full">
+          <PatientCard
+            patient={{ ...patient, observations: observations?.length }}
+          />
           <h1 className="text-2xl font-bold mb-4">
             Observaciones de <strong>{patientObservations?.name}</strong>
           </h1>
