@@ -1,30 +1,32 @@
-import { addObservation } from "@/services/api";
-import "@radix-ui/react-dialog";
 import { LoadingSpinner } from "../LoadingSpinner";
 import { Button } from "../ui";
 import {
-  DialogHeader,
-  DialogFooter,
   Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogTitle,
   DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "../ui/dialog";
 import usePatientStore from "@/hooks/useStore";
-import { FilePlusIcon } from "lucide-react";
+import { updateObservation } from "@/services/api";
+import { ObservationType } from "@/types/dto.type";
+import { PencilIcon } from "lucide-react";
 import { getSession } from "next-auth/react";
 import { useState } from "react";
 
-export const NewObservationModal = () => {
+export const EditObservationModal = ({
+  observation,
+}: {
+  observation: ObservationType;
+}) => {
   const { patientObservations, setPatientObservations } = usePatientStore();
 
-  const initObservation = {
-    observation_code: "",
-    value: "",
-    date: "",
-  };
-  const [newObservation, setNewObservation] = useState(initObservation);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { patient_id, user_id, ...initOnservation } = observation;
+
+  const [newObservation, setNewObservation] = useState(initOnservation);
   const [cargando, setCargando] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +34,9 @@ export const NewObservationModal = () => {
     setNewObservation((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (
+    observation: Omit<ObservationType, "patient_id" | "user_id">
+  ) => {
     const session = await getSession(); // Obtener la sesión del frontend
 
     if (!session?.accessToken) {
@@ -42,16 +46,18 @@ export const NewObservationModal = () => {
 
     try {
       setCargando(true);
-      const addedObservation = await addObservation(session.accessToken, {
-        ...newObservation,
-        patient_id: patientObservations.id,
-      }); // Pasando el token
-      if (addedObservation) {
+      const updatedObservation = await updateObservation(
+        session.accessToken,
+        observation
+      );
+      if (updatedObservation) {
         setCargando(false);
 
         setPatientObservations({
           ...patientObservations,
-          observations: [...patientObservations.observations, addedObservation],
+          observations: patientObservations.observations.map((obs) =>
+            obs.id === updatedObservation.id ? updatedObservation : obs
+          ),
         });
       }
     } catch (error) {
@@ -61,13 +67,11 @@ export const NewObservationModal = () => {
   return (
     <Dialog>
       <DialogTrigger asChild className="cursor-pointer">
-        <Button className="flex">
-          <FilePlusIcon className="hover:text-blue-500" /> Nueva observación
-        </Button>
+        <PencilIcon className="hover:text-green-500" />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Agregar nueva observación</DialogTitle>
+          <DialogTitle>Editar observación</DialogTitle>
         </DialogHeader>
         <form className="mt-4 space-y-4">
           <div>
@@ -120,7 +124,7 @@ export const NewObservationModal = () => {
           <DialogClose asChild>
             <Button
               disabled={cargando}
-              onClick={() => handleSubmit()}
+              onClick={() => handleSubmit(newObservation)}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             >
               <div className="flex text-center">

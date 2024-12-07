@@ -13,7 +13,7 @@ interface Store {
 
 //TODO: separar en dos stores
 //TODO: ver inferencia de tipos
-const useStore = create<Store>()(
+const usePatientStore = create<Store>()(
   devtools((set) => ({
     patients: [],
     setPatients: (patients) => set({ patients }),
@@ -23,4 +23,4 @@ const useStore = create<Store>()(
   }))
 );
 
-export default useStore;
+export default usePatientStore;

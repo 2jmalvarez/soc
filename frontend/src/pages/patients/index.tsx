@@ -1,4 +1,4 @@
-import useStore from "@/hooks/useStore";
+import usePatientStore from "@/hooks/useStore";
 import { getPatients } from "@/services/api";
 import { PatientTypeDto } from "@/types/dto.type";
 import { GetServerSideProps } from "next";
@@ -41,7 +41,7 @@ const PatientsPage = ({
 }: {
   patients: PatientTypeDto[];
 }) => {
-  const { setPatients, patients } = useStore();
+  const { setPatients, patients } = usePatientStore();
   useEffect(() => {
     setPatients(patientsDto);
     // eslint-disable-next-line react-hooks/exhaustive-deps
