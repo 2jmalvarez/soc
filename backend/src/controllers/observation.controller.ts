@@ -5,6 +5,7 @@ import { idSchema } from "../types/patient.schema";
 import { baseObservationSchema } from "../types/observation.schema";
 import { NotFoundError } from "../services/error.service";
 import PatientService from "../services/patient.service";
+import ObservationService from "../services/observation.service";
 
 // Lista las observaciones de un paciente
 export const getObservations = async (req: Request, res: Response) => {
@@ -38,6 +39,35 @@ export const addObservation = async (req: Request, res: Response) => {
       date,
       user_id,
     });
+
+    RoutesService.responseSuccess(res, observation, 201);
+  } catch (error) {
+    console.log({ error });
+
+    RoutesService.responseError(res, error as any);
+  }
+};
+
+// Añade una nueva observación
+export const addObservationFhir = async (req: Request, res: Response) => {
+  try {
+    RoutesService.validationParams(req.params, idSchema);
+    const { id: patientId } = req.params;
+    RoutesService.validationBody(req.body, baseObservationSchema);
+    const { observation_code, value, date } = req.body;
+    const user_id = RoutesService.getUserId(req);
+
+    const observation = ObservationService.createFhir({
+      status: "final",
+    });
+
+    // const observation = await ObservationModel.create({
+    //   patientId: +patientId,
+    //   observation_code,
+    //   value,
+    //   date,
+    //   user_id,
+    // });
 
     RoutesService.responseSuccess(res, observation, 201);
   } catch (error) {

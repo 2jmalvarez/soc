@@ -83,3 +83,18 @@ Authorization: Bearer {{token}}
 ### Eliminar una observación
 DELETE {{baseUrl}}/observations/:id
 Authorization: Bearer {{token}}
+
+
+### Observaciones Fhir
+
+### Crear observacion Fhir
+POST {{baseUrl}}/observations/2
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "observation_code":"213", 
+  "value":"12", 
+  "date":"2024-11-29T10:00:00Z"
+}
+ 
