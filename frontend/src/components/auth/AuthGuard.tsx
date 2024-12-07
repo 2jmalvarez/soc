@@ -15,9 +15,6 @@ const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     if (!isLoading && !isAuthenticated) {
       router.push("/"); // Redirige al login si no está autenticado
     }
-    // if (!isLoading && isAuthenticated && router.pathname === "/") {
-    //   router.push("/patients"); // Redirige al dashboard si está autenticado
-    // }
   }, [isLoading, isAuthenticated, router]);
 
   if (isLoading) {

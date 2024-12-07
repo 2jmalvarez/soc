@@ -4,10 +4,10 @@ import { LoadingSpinner } from "../common/LoadingSpinner";
 import { Button, Input } from "../ui";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const LoginCard = () => {
-  const { status } = useSession(); // Hook de NextAuth
+  const { data: session, status } = useSession(); // Hook de NextAuth
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,6 +35,19 @@ export const LoginCard = () => {
       router.push("/patients"); // Redirigir a la página principal
     }
   };
+  useEffect(() => {
+    if (session) {
+      router.push("/patients"); // Redirige al login si no está autenticado
+    }
+  }, [session, router]);
+
+  if (status === "loading" || status === "authenticated") {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <div className="w-screen h-screen flex items-center justify-center">
@@ -77,17 +90,11 @@ export const LoginCard = () => {
           <Button
             type="submit"
             className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 mt-4 flex items-center justify-center"
-            disabled={status === "loading" || loading}
+            disabled={loading}
           >
-            {status === "loading" ? (
-              <div className="flex ">
-                <LoadingSpinner /> Cargando
-              </div>
-            ) : (
-              <div className="flex ">
-                {loading && <LoadingSpinner />} Ingresar
-              </div>
-            )}
+            <div className="flex ">
+              {loading && <LoadingSpinner />} Ingresar
+            </div>
           </Button>
         </form>
       </div>
