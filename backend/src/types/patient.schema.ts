@@ -8,5 +8,5 @@ export const patientSchema = Joi.object({
 });
 
 export const idSchema = Joi.object({
-  id: Joi.number().integer().required(),
+  id: Joi.string().uuid().required(),
 });

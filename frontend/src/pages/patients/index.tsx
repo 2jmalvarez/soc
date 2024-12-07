@@ -50,7 +50,7 @@ const PatientsPage = ({
   }, [patientsDto]);
   return (
     <Background>
-      <div className="container mx-auto p-6 pt-20">
+      <div className="container mx-auto flex flex-col justify-start self-start p-6 pt-20">
         <h1 className="text-2xl font-semibold bg-slate-300 rounded p-2 w-fit ml-4">
           Lista de Pacientes
         </h1>

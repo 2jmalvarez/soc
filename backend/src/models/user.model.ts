@@ -1,3 +1,4 @@
+import { v4 } from "uuid";
 import pool from "../db/postgres";
 
 export interface User {
@@ -11,12 +12,12 @@ const UserModel = {
   // Método para crear un nuevo usuario
   async create({ name, email, password }: Omit<User, "id">): Promise<User> {
     const query = `
-      INSERT INTO users (name, email, password)
-      VALUES ($1, $2, $3)
+      INSERT INTO users (id,name, email, password)
+      VALUES ($1, $2, $3, $4)
       RETURNING id, name, email
     `;
 
-    const values = [name, email, password];
+    const values = [v4(), name, email, password];
 
     try {
       const res = await pool.query(query, values);

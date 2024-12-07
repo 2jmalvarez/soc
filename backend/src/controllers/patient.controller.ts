@@ -25,7 +25,7 @@ export const getPatientById = async (req: Request, res: Response) => {
     RoutesService.validationParams(req.params, idSchema);
     const { id } = req.params;
 
-    const patient = await PatientModel.findById(+id);
+    const patient = await PatientModel.findById(id);
     if (!patient)
       throw new NotFoundError("Paciente no encontrado con id = " + id);
 

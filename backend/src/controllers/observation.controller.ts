@@ -12,10 +12,9 @@ export const getObservations = async (req: Request, res: Response) => {
   try {
     RoutesService.validationParams(req.params, idSchema);
     const { id: patientId } = req.params;
+    console.log({ patientId });
 
-    const patientObservations = await PatientService.getObservations(
-      +patientId
-    );
+    const patientObservations = await PatientService.getObservations(patientId);
 
     RoutesService.responseSuccess(res, patientObservations);
   } catch (error) {
@@ -29,15 +28,31 @@ export const addObservation = async (req: Request, res: Response) => {
     RoutesService.validationParams(req.params, idSchema);
     RoutesService.validationBody(req.body, baseObservationSchema);
     const { id: patientId } = req.params;
-    const { observation_code, value, date } = req.body;
+    const { observation_code } = req.body;
     const user_id = RoutesService.getUserId(req);
 
     const observation = await ObservationModel.create({
-      patientId: +patientId,
+      category: "vital-signs",
+      components: [
+        {
+          code: "8480-6",
+          display: "Systolic Blood Pressure",
+          value: 120,
+          unit: "mmHg",
+        },
+        {
+          code: "8462-4",
+          display: "Diastolic Blood Pressure",
+          value: 80,
+          unit: "mmHg",
+        },
+      ],
+      date: new Date().toISOString(),
       observation_code,
-      value,
-      date,
-      user_id,
+      patient_id: patientId,
+      status: "final",
+      user_id: user_id,
+      value: null,
     });
 
     RoutesService.responseSuccess(res, observation, 201);
@@ -86,16 +101,18 @@ export const updateObservation = async (req: Request, res: Response) => {
     const { observation_code, value, date } = req.body;
     const user_id = RoutesService.getUserId(req);
 
-    const observation = await ObservationModel.findOneById(+observationId);
+    const observation = await ObservationModel.findOneById(observationId);
     if (!observation) throw new NotFoundError("Observación no encontrada");
 
     const editedObservation = await ObservationModel.update({
-      id: +observationId,
+      id: observationId,
       observation_code,
       value,
       date,
-      patientId: observation.patientId,
+      patient_id: observation.patient_id,
       user_id,
+      category: observation.category,
+      status: observation.status,
     });
 
     RoutesService.responseSuccess(res, editedObservation);
@@ -110,10 +127,10 @@ export const deleteObservation = async (req: Request, res: Response) => {
     RoutesService.validationParams(req.params, idSchema);
     const { id } = req.params;
 
-    const observation = await ObservationModel.findOneById(+id);
+    const observation = await ObservationModel.findOneById(id);
     if (!observation) throw new NotFoundError("Observación no encontrada");
 
-    await ObservationModel.delete(+id);
+    await ObservationModel.delete(id);
 
     RoutesService.responseSuccess(res, observation);
   } catch (error) {

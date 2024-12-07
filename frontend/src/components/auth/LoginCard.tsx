@@ -2,6 +2,7 @@
 
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { Button, Input } from "../ui";
+import { useToast } from "@/hooks/use-toast";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -11,13 +12,13 @@ export const LoginCard = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-
+  const { toast } = useToast();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    // setError("");
     setLoading(true);
     const result = await signIn("credentials", {
       redirect: false,
@@ -30,7 +31,11 @@ export const LoginCard = () => {
     }
 
     if (result?.error) {
-      setError(result.error);
+      toast({
+        title: "Error",
+        description: result.error,
+        variant: "destructive",
+      });
     } else {
       router.push("/patients"); // Redirigir a la página principal
     }
@@ -55,7 +60,7 @@ export const LoginCard = () => {
         <h2 className="text-2xl font-semibold text-center mb-4">
           Login to Zentricx
         </h2>
-        {error && <div className="mb-4 text-sm text-red-600">{error}</div>}
+        {/* {error && <div className="mb-4 text-sm text-red-600">{error}</div>} */}
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label

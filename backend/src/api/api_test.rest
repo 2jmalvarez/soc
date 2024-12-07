@@ -27,16 +27,27 @@ Content-Type: application/json
 
 
 ######### Rutas de pacientes #########
+
+### Generar un nombre aleatorio en español utilizando un servicio externo
+# @name RandomName
+GET https://randomuser.me/api/?nat=es
+
+### Crear un nuevo usuario con el nombre aleatorio generado
+@randomName = {{RandomName.response.body.results[0].name.first}} {{RandomName.response.body.results[0].name.last}}
+@randomGender = {{RandomName.response.body.results[0].gender}}
+@randomAddress = {{RandomName.response.body.results[0].location.street.name}} {{RandomName.response.body.results[0].location.street.number}}
+@randomBirthDate = {{RandomName.response.body.results[0].dob.date}}
+
 ### Crear un nuevo paciente
 POST {{baseUrl}}/patients
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "name": "asd",
-  "birth_date": "1990-01-01",
-  "gender": "male",
-  "address": "Dirección de prueba"
+  "name": "{{randomName}}",
+  "birth_date":"{{randomBirthDate}}",
+  "gender": "{{randomGender}}",
+  "address": "{{randomAddress}}"
 }
 
 ### Obtener todos los pacientes

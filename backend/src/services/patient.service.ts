@@ -27,9 +27,11 @@ const PatientService = {
       throw error;
     }
   },
-  async getObservations(patientId: number) {
+  async getObservations(patientId: string) {
     try {
       const observations = await ObservationModel.findAllByPatient(patientId);
+      console.log({ observations });
+
       const patient = await PatientModel.findById(patientId);
       return { ...patient, observations };
     } catch (error: any) {

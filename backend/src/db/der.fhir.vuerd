@@ -13,7 +13,7 @@
     "canvasType": "ERD",
     "language": 16,
     "tableNameCase": 4,
-    "columnNameCase": 2,
+    "columnNameCase": 8,
     "bracketType": 1,
     "relationshipDataTypeSync": true,
     "relationshipOptimization": false,
