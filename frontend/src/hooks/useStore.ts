@@ -1,20 +1,26 @@
+import { PatientObservationsType, PatientTypeDto } from "@/types/dto.type";
 import { create } from "zustand";
-
-interface Patient {
-  id: number;
-  name: string;
-  age: number;
-  condition: string;
-}
+import { devtools } from "zustand/middleware";
 
 interface Store {
-  patients: Patient[];
-  setPatients: (patients: Patient[]) => void;
+  patients: PatientTypeDto[];
+  setPatients: (patients: PatientTypeDto[]) => void;
+  patientObservations: PatientObservationsType;
+  setPatientObservations: (
+    patientObservations: PatientObservationsType
+  ) => void;
 }
 
-const useStore = create<Store>((set) => ({
-  patients: [],
-  setPatients: (patients) => set({ patients }),
-}));
+//TODO: separar en dos stores
+//TODO: ver inferencia de tipos
+const useStore = create<Store>()(
+  devtools((set) => ({
+    patients: [],
+    setPatients: (patients) => set({ patients }),
+    patientObservations: {} as PatientObservationsType,
+    setPatientObservations: (patientObservations) =>
+      set({ patientObservations }),
+  }))
+);
 
 export default useStore;

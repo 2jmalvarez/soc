@@ -1,25 +1,27 @@
 // frontend/src/pages/patients/[id].tsx
 import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { NewObservationModal } from "@/components/observations/NewObservationModal";
 import { Button } from "@/components/ui";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import useStore from "@/hooks/useStore";
 import {
-  addObservation,
   getObservations,
   removeObservation,
   updateObservation,
 } from "@/services/api";
 import { ObservationType, PatientObservationsType } from "@/types/dto.type";
-import { FilePlusIcon, PencilIcon, Trash2Icon } from "lucide-react";
+import { PencilIcon, Trash2Icon } from "lucide-react";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { v4 } from "uuid";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -61,26 +63,33 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default function ObservationsPage({
-  patientObservations,
+  patientObservations: patientObservationsDto,
 }: {
   readonly patientObservations: PatientObservationsType;
 }) {
+  const { patientObservations, setPatientObservations } = useStore();
+  useEffect(() => {
+    setPatientObservations(patientObservationsDto);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [patientObservationsDto]);
+
   return (
     <div className="container mx-auto p-6 pt-20">
       <div className="flex  justify-between">
         <div className="w-full">
           <h1 className="text-2xl font-bold mb-4">
-            Observaciones de <strong>{patientObservations.name}</strong>
+            Observaciones de <strong>{patientObservations?.name}</strong>
           </h1>
           <div className="flex justify-between w-full">
             <h2 className="text-xl font-bold mb-2">
-              Lista de Observaciones ({patientObservations.observations.length}){" "}
+              Lista de Observaciones (
+              {patientObservations?.observations?.length}){" "}
             </h2>
 
-            <NewObservationModal patient_id={patientObservations.id} />
+            <NewObservationModal />
           </div>
           <ul className="space-y-2 grid grid-cols-2 gap-4 w-full ">
-            {patientObservations.observations.toReversed().map((obs) => (
+            {patientObservations?.observations?.toReversed()?.map((obs) => (
               <CardObservation key={v4()} observation={obs} />
             ))}
           </ul>
@@ -221,116 +230,124 @@ const CardObservation = ({ observation }: { observation: ObservationType }) => (
 //   );
 // };
 
-const NewObservationModal = ({ patient_id }: { patient_id: number }) => {
-  const initObservation = {
-    observation_code: "",
-    value: "",
-    date: "",
-    patient_id,
-  };
-  const [newObservation, setNewObservation] = useState(initObservation);
-  const [cargando, setCargando] = useState(false);
+// const NewObservationModal = () => {
+//   const { patientObservations, setPatientObservations } = useStore();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setNewObservation((prev) => ({ ...prev, [name]: value }));
-  };
+//   const initObservation = {
+//     observation_code: "",
+//     value: "",
+//     date: "",
+//   };
+//   const [newObservation, setNewObservation] = useState(initObservation);
+//   const [cargando, setCargando] = useState(false);
 
-  const handleSubmit = async () => {
-    const session = await getSession(); // Obtener la sesión del frontend
+//   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     const { name, value } = e.target;
+//     setNewObservation((prev) => ({ ...prev, [name]: value }));
+//   };
 
-    if (!session?.accessToken) {
-      console.error("No access token available");
-      return;
-    }
+//   const handleSubmit = async () => {
+//     const session = await getSession(); // Obtener la sesión del frontend
 
-    try {
-      setCargando(true);
-      const addedObservation = await addObservation(
-        session.accessToken,
-        newObservation
-      ); // Pasando el token
-      if (addedObservation) {
-        setCargando(false);
-      }
-    } catch (error) {
-      console.error("Error adding observation:", error);
-    }
-  };
-  return (
-    <Dialog>
-      <DialogTrigger asChild className="cursor-pointer">
-        <Button className="flex">
-          <FilePlusIcon className="hover:text-blue-500" /> Nueva observación
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Agregar nueva observación</DialogTitle>
-        </DialogHeader>
-        <form className="mt-4 space-y-4">
-          <div>
-            <label htmlFor="observation_code" className="block font-semibold">
-              Código
-            </label>
-            <input
-              id="observation_code"
-              name="observation_code"
-              type="text"
-              value={newObservation.observation_code}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="value" className="block font-semibold">
-              Valor
-            </label>
-            <input
-              id="value"
-              name="value"
-              type="text"
-              value={newObservation.value}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="date" className="block font-semibold">
-              Fecha
-            </label>
-            <input
-              id="date"
-              name="date"
-              type="date"
-              value={
-                newObservation.date &&
-                new Date(newObservation.date).toISOString().split("T")[0]
-              }
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-        </form>
-        <DialogFooter>
-          <Button
-            disabled={cargando}
-            onClick={() => handleSubmit()}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            <div className="flex text-center">
-              {cargando && <LoadingSpinner color="text-white w-4 h-4" />}{" "}
-              Guardar
-            </div>
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-};
+//     if (!session?.accessToken) {
+//       console.error("No access token available");
+//       return;
+//     }
+
+//     try {
+//       setCargando(true);
+//       const addedObservation = await addObservation(session.accessToken, {
+//         ...newObservation,
+//         patient_id: patientObservations.id,
+//       }); // Pasando el token
+//       if (addedObservation) {
+//         setCargando(false);
+
+//         setPatientObservations({
+//           ...patientObservations,
+//           observations: [...patientObservations.observations, addedObservation],
+//         });
+//       }
+//     } catch (error) {
+//       console.error("Error adding observation:", error);
+//     }
+//   };
+//   return (
+//     <Dialog>
+//       <DialogTrigger asChild className="cursor-pointer">
+//         <Button className="flex">
+//           <FilePlusIcon className="hover:text-blue-500" /> Nueva observación
+//         </Button>
+//       </DialogTrigger>
+//       <DialogContent className="sm:max-w-[425px]">
+//         <DialogHeader>
+//           <DialogTitle>Agregar nueva observación</DialogTitle>
+//         </DialogHeader>
+//         <form className="mt-4 space-y-4">
+//           <div>
+//             <label htmlFor="observation_code" className="block font-semibold">
+//               Código
+//             </label>
+//             <input
+//               id="observation_code"
+//               name="observation_code"
+//               type="text"
+//               value={newObservation.observation_code}
+//               onChange={handleInputChange}
+//               className="w-full p-2 border rounded"
+//               required
+//             />
+//           </div>
+//           <div>
+//             <label htmlFor="value" className="block font-semibold">
+//               Valor
+//             </label>
+//             <input
+//               id="value"
+//               name="value"
+//               type="text"
+//               value={newObservation.value}
+//               onChange={handleInputChange}
+//               className="w-full p-2 border rounded"
+//               required
+//             />
+//           </div>
+//           <div>
+//             <label htmlFor="date" className="block font-semibold">
+//               Fecha
+//             </label>
+//             <input
+//               id="date"
+//               name="date"
+//               type="date"
+//               value={
+//                 newObservation.date &&
+//                 new Date(newObservation.date).toISOString().split("T")[0]
+//               }
+//               onChange={handleInputChange}
+//               className="w-full p-2 border rounded"
+//               required
+//             />
+//           </div>
+//         </form>
+//         <DialogFooter>
+//           <DialogClose asChild>
+//             <Button
+//               disabled={cargando}
+//               onClick={() => handleSubmit()}
+//               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+//             >
+//               <div className="flex text-center">
+//                 {cargando && <LoadingSpinner color="text-white w-4 h-4" />}{" "}
+//                 Guardar
+//               </div>
+//             </Button>
+//           </DialogClose>
+//         </DialogFooter>
+//       </DialogContent>
+//     </Dialog>
+//   );
+// };
 
 const EditObservationModal = ({
   observation,
@@ -428,16 +445,18 @@ const EditObservationModal = ({
           </div>
         </form>
         <DialogFooter>
-          <Button
-            disabled={cargando}
-            onClick={() => handleSubmit(newObservation)}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            <div className="flex text-center">
-              {cargando && <LoadingSpinner color="text-white w-4 h-4" />}{" "}
-              Guardar
-            </div>
-          </Button>
+          <DialogClose asChild>
+            <Button
+              disabled={cargando}
+              onClick={() => handleSubmit(newObservation)}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              <div className="flex text-center">
+                {cargando && <LoadingSpinner color="text-white w-4 h-4" />}{" "}
+                Guardar
+              </div>
+            </Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -476,15 +495,17 @@ const DeleteObservationModal = ({ id }: { id: number }) => {
           <DialogTitle>Eliminar observación</DialogTitle>
         </DialogHeader>
         <DialogFooter>
-          <Button
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-            onClick={handleSubmit}
-          >
-            <div className="flex text-center">
-              {cargando && <LoadingSpinner color="text-white w-4 h-4" />}{" "}
-              Eliminar
-            </div>
-          </Button>
+          <DialogClose asChild>
+            <Button
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              onClick={handleSubmit}
+            >
+              <div className="flex text-center">
+                {cargando && <LoadingSpinner color="text-white w-4 h-4" />}{" "}
+                Eliminar
+              </div>
+            </Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>

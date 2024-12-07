@@ -1,8 +1,10 @@
+import useStore from "@/hooks/useStore";
 import { getPatients } from "@/services/api";
 import { PatientTypeDto } from "@/types/dto.type";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import Link from "next/link";
+import { useEffect } from "react";
 
 // Obtener la sesión y los pacientes desde el servidor
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -34,7 +36,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-const PatientsPage = ({ patients }: { patients: PatientTypeDto[] }) => {
+const PatientsPage = ({
+  patients: patientsDto,
+}: {
+  patients: PatientTypeDto[];
+}) => {
+  const { setPatients, patients } = useStore();
+  useEffect(() => {
+    setPatients(patientsDto);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [patientsDto]);
   return (
     <div>
       <div className="container mx-auto p-6 pt-20">
