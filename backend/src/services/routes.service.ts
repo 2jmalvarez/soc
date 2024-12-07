@@ -19,7 +19,9 @@ const RoutesService = {
   ) => {
     console.log({ name, date: new Date().toLocaleString(), message, status });
 
-    res.status(status).json({ message, error: name });
+    res
+      .status(name === "TokenExpiredError" ? 401 : status)
+      .json({ message, error: name });
   },
   responseSuccess: (res: Response, data: any, status = 200) => {
     res.status(status).json({ data, error: false });

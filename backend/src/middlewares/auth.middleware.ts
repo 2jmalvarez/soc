@@ -17,7 +17,9 @@ export const authenticate = (
 
     if (!token) throw new UnauthorizedError("No autorizado");
 
-    req.user = jwt.verify(token, process.env.JWT_SECRET || "secret");
+    const user = jwt.verify(token, process.env.JWT_SECRET || "secret");
+
+    req.user = user;
     next();
   } catch (error) {
     RoutesService.responseError(res, error as any);

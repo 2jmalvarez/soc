@@ -1,5 +1,4 @@
-import api from "@/services/api";
-// import axios from "axios";
+import { backend } from "@/services/backend";
 import NextAuth, { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -24,7 +23,7 @@ export const authOptions = {
           if (!credentials?.email || !credentials?.password)
             throw new Error("Missing credentials");
 
-          const { data } = await api.post(`/auth/login`, {
+          const { data } = await backend.post(`/auth/login`, {
             email: credentials?.email,
             password: credentials?.password,
           });
@@ -57,7 +56,7 @@ export const authOptions = {
     },
   },
   pages: {
-    signIn: "/auth/signin", // Puedes personalizar la ruta de inicio de sesión si es necesario
+    signIn: "/", // Ver ruta de inicio de sesión
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

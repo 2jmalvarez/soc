@@ -1,11 +1,9 @@
-// frontend/src/pages/patients/[id].tsx
-// import { Background } from "@/components/layouts/Background";
 import { CardObservation } from "@/components/observations/CardObservation";
 import { NewObservationModal } from "@/components/observations/NewObservationModal";
 import { PatientCard } from "@/components/patients/Patient";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import usePatientStore from "@/hooks/useStore";
-import { getObservations } from "@/services/api";
+import { getObservations } from "@/services/backend";
 import { PatientObservationsType } from "@/types/dto.type";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";

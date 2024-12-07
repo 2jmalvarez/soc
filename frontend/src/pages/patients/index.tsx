@@ -1,7 +1,7 @@
 import { Background } from "@/components/layouts/Background";
 import { PatientCard } from "@/components/patients/Patient";
 import usePatientStore from "@/hooks/useStore";
-import { getPatients } from "@/services/api";
+import { getPatients } from "@/services/backend";
 import { PatientTypeDto } from "@/types/dto.type";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
@@ -11,7 +11,7 @@ import { v4 } from "uuid";
 // Obtener la sesión y los pacientes desde el servidor
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
-  console.log({ session });
+
   if (!session) {
     return {
       redirect: {
