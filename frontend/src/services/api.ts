@@ -5,6 +5,7 @@ import { signOut } from "next-auth/react";
 const handleErrorApi = <T>(error: unknown) => {
   if (axios.isAxiosError(error)) {
     const tokenExpired = error.response?.data?.error === "TokenExpiredError";
+
     return {
       data: [] as unknown as T,
       error: true,
@@ -47,6 +48,7 @@ export async function addObservation(
         Authorization: `Bearer ${accessToken}`, // Agregar el token en la cabecera
       },
     });
+
     return handleResponseApi<ObservationType>(response);
   } catch (error) {
     return handleErrorApi<ObservationType>(error);
@@ -100,10 +102,10 @@ api.interceptors.response.use(
     if (isAxiosError(error)) {
       if (error.response?.status === 401) {
         signOut();
-
-        return Promise.reject(error);
       }
+      return Promise.reject(error);
     }
+
     // signOut();
     return Promise.reject(new Error(error));
   }

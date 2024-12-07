@@ -27,13 +27,10 @@ export default async function handler(
           patientId: patient_id,
           observation,
         }); // Función para guardar en DB
-        res
-          .status(newObservation.status)
-          .json(newObservation.error ? newObservation : newObservation.data);
-      } catch {
-        console.log("Error");
 
-        res.status(401).json({ error: "Unauthorized" });
+        res.status(newObservation.status).json(newObservation);
+      } catch {
+        res.status(400).json({ error: "BadRequest" });
       }
 
       break;
@@ -47,9 +44,7 @@ export default async function handler(
           observationId: id,
           observation,
         }); // Función para guardar en DB
-        res
-          .status(newObservation.status)
-          .json(newObservation.error ? newObservation : newObservation.data);
+        res.status(newObservation.status).json(newObservation);
       } catch {
         res.status(400).json({ error: "BadRequest" });
       }
@@ -66,9 +61,7 @@ export default async function handler(
           observationId: observationId,
         }); // Función para guardar en DB
 
-        res
-          .status(newObservation.status)
-          .json(newObservation.error ? newObservation : newObservation.data);
+        res.status(newObservation.status).json(newObservation);
       } catch {
         res.status(400).json({ error: "BadRequest" });
       }
