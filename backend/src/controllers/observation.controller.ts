@@ -52,15 +52,15 @@ export const updateObservation = async (req: Request, res: Response) => {
   try {
     RoutesService.validationParams(req.params, idSchema);
     RoutesService.validationBody(req.body, baseObservationSchema);
-    const { id: patientId } = req.params;
+    const { id: observationId } = req.params;
     const { observation_code, value, date } = req.body;
     const user_id = RoutesService.getUserId(req);
 
-    const observation = await ObservationModel.findOneById(+patientId);
+    const observation = await ObservationModel.findOneById(+observationId);
     if (!observation) throw new NotFoundError("Observación no encontrada");
 
-    await ObservationModel.update({
-      id: +patientId,
+    const editedObservation = await ObservationModel.update({
+      id: +observationId,
       observation_code,
       value,
       date,
@@ -68,7 +68,7 @@ export const updateObservation = async (req: Request, res: Response) => {
       user_id,
     });
 
-    RoutesService.responseSuccess(res, observation);
+    RoutesService.responseSuccess(res, editedObservation);
   } catch (error) {
     RoutesService.responseError(res, error as any);
   }

@@ -86,7 +86,59 @@ export const postObservation = async (props: {
   }
 };
 
-// frontend/services/api.ts
+export const putObservation = async (props: {
+  accessToken: string;
+  observationId: string;
+  observation: Omit<ObservationType, "patient_id">;
+}) => {
+  try {
+    const { accessToken, observationId, observation } = props;
+    const { data } = await api.put<{
+      data: PatientObservationsType;
+      error: boolean;
+    }>(`/observations/${observationId}`, observation, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return { data: data.data, error: false }; // Retorna los pacientes y una bandera para el error
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.data?.error === "TokenExpiredError") {
+        console.error("Token expired. Logging out...");
+        return { data: [], error: true }; // Devolvemos una bandera indicando que el token expiró
+      }
+    }
+    return { data: [], error: false }; // Si hubo otro error, devolvemos datos vacíos
+  }
+};
+
+export const deleteObservation = async (props: {
+  accessToken: string;
+  observationId: number;
+}) => {
+  try {
+    const { accessToken, observationId } = props;
+    const { data } = await api.delete<{
+      data: PatientObservationsType;
+      error: boolean;
+    }>(`/observations/${observationId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return { data: data.data, error: false }; // Retorna los pacientes y una bandera para el error
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.data?.error === "TokenExpiredError") {
+        console.error("Token expired. Logging out...");
+        return { data: [], error: true }; // Devolvemos una bandera indicando que el token expiró
+      }
+    }
+    return { data: [], error: false }; // Si hubo otro error, devolvemos datos vacíos
+  }
+};
+
 export async function addObservation(
   accessToken: string,
   observation: {
@@ -107,6 +159,53 @@ export async function addObservation(
 
   if (!response.ok) {
     throw new Error("Failed to add observation");
+  }
+
+  return await response.json();
+}
+
+export async function updateObservation(
+  accessToken: string,
+  observation: {
+    observation_code: string;
+    value: string;
+    date: string;
+    id: number;
+  }
+) {
+  const response = await fetch("/api/observations", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`, // Agregar el token en la cabecera
+    },
+    body: JSON.stringify(observation),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to edit observation");
+  }
+
+  return await response.json();
+}
+
+export async function removeObservation(
+  accessToken: string,
+  observationId: number
+) {
+  console.log({ observationId });
+
+  const response = await fetch("/api/observations", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`, // Agregar el token en la cabecera
+    },
+    body: JSON.stringify({ observationId }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to edit observation");
   }
 
   return await response.json();

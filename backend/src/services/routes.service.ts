@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import Joi from "joi";
 import { BodyError, ErrorType, ParamsError } from "./error.service";
 
@@ -17,6 +17,8 @@ const RoutesService = {
     res: Response,
     { message = "Error desconocido", status = 500, name }: ErrorType
   ) => {
+    console.log({ message, status, name });
+
     res.status(status).json({ message, error: name });
   },
   responseSuccess: (res: Response, data: any, status = 200) => {
