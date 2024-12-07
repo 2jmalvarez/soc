@@ -4,13 +4,13 @@
   "settings": {
     "width": 2000,
     "height": 2000,
-    "scrollTop": -132,
+    "scrollTop": -232,
     "scrollLeft": -21.285,
     "zoomLevel": 0.97,
     "show": 511,
     "database": 16,
     "databaseName": "soc_g3kp",
-    "canvasType": "@dineug/erd-editor/builtin-schema-sql",
+    "canvasType": "ERD",
     "language": 16,
     "tableNameCase": 4,
     "columnNameCase": 2,
@@ -541,20 +541,7 @@
         }
       }
     },
-    "indexEntities": {
-      "OMZmNiRPZVZjWFMTbyDQu": {
-        "id": "OMZmNiRPZVZjWFMTbyDQu",
-        "name": "",
-        "tableId": "Qm_TNlber5s-8zdj0dFIu",
-        "indexColumnIds": [],
-        "seqIndexColumnIds": [],
-        "unique": false,
-        "meta": {
-          "updateAt": 1733021263350,
-          "createAt": 1733021263350
-        }
-      }
-    },
+    "indexEntities": {},
     "indexColumnEntities": {},
     "memoEntities": {}
   },
@@ -763,12 +750,6 @@
       "relationshipEntities",
       1733020849929,
       -1,
-      {}
-    ],
-    "OMZmNiRPZVZjWFMTbyDQu": [
-      "indexEntities",
-      1733021263349,
-      1733021269082,
       {}
     ],
     "hqvKde3TWkK9VEMEPrmhr": [
