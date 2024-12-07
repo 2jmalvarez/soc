@@ -6,18 +6,17 @@ import React, { useEffect } from "react";
 const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { data: session, status } = useSession(); // Hook de NextAuth
   const router = useRouter();
-
   const isAuthenticated = !!session; // Si hay sesión, está autenticado
   const isLoading = status === "loading";
+  console.log({ session, status, isAuthenticated });
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.push("/"); // Redirige al login si no está autenticado
     }
-
-    if (!isLoading && isAuthenticated && router.pathname === "/") {
-      router.push("/patients"); // Redirige al dashboard si está autenticado
-    }
+    // if (!isLoading && isAuthenticated && router.pathname === "/") {
+    //   router.push("/patients"); // Redirige al dashboard si está autenticado
+    // }
   }, [isLoading, isAuthenticated, router]);
 
   if (isLoading) {
@@ -37,7 +36,7 @@ const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }
 
   if (!isAuthenticated) {
-    return null; // Evita mostrar el contenido hasta que se redirija
+    return <>redirigiend</>; // Evita mostrar el contenido hasta que se redirija
   }
 
   return <>{children}</>;

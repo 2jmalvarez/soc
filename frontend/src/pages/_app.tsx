@@ -13,15 +13,15 @@ function MyApp({ Component, pageProps, router }: AppProps) {
 
   return (
     <SessionProvider session={pageProps.session}>
-      <AuthGuard>
-        {isProtected ? (
+      {isProtected ? (
+        <AuthGuard>
           <Layout>
             <Component {...pageProps} />{" "}
           </Layout>
-        ) : (
-          <Component {...pageProps} />
-        )}
-      </AuthGuard>
+        </AuthGuard>
+      ) : (
+        <Component {...pageProps} />
+      )}
     </SessionProvider>
   );
 }

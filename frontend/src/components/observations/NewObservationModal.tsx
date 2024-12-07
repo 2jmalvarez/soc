@@ -67,13 +67,13 @@ export const NewObservationModal = () => {
         toast({
           description: "Observación creada correctamente",
         });
+        setNewObservation(initObservation);
+        setIsOpen(false);
       }
-      setIsOpen(false);
     } catch (error) {
       console.error("Error adding observation:", error);
     } finally {
       setCargando(false);
-      setNewObservation(initObservation);
     }
   };
 
