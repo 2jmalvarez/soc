@@ -1,4 +1,4 @@
-import { LoadingSpinner } from "./LoadingSpinner";
+import { LoadingSpinner } from "../common/LoadingSpinner";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
@@ -13,6 +13,10 @@ const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.push("/"); // Redirige al login si no está autenticado
+    }
+
+    if (!isLoading && isAuthenticated && router.pathname === "/") {
+      router.push("/patients"); // Redirige al dashboard si está autenticado
     }
   }, [isLoading, isAuthenticated, router]);
 

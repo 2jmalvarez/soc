@@ -1,4 +1,4 @@
-import { LoadingSpinner } from "../LoadingSpinner";
+import { LoadingSpinner } from "../common/LoadingSpinner";
 import { Button } from "../ui";
 import {
   Dialog,
@@ -72,6 +72,7 @@ export const EditObservationModal = ({
         toast({
           description: "Observación actualizada correctamente",
         });
+        setIsOpen(false);
       }
     } catch (error) {
       console.error("Error editing observation:", error);

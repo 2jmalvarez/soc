@@ -1,8 +1,8 @@
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import "../globals.css";
-import AuthGuard from "../components/AuthGuard";
-import Layout from "@/components/Layout";
+import AuthGuard from "@/components/auth/AuthGuard";
+import Layout from "@/components/layouts/Layout";
 
 const protectedRoutes = ["/patients", "/another-protected-route"]; // Rutas que requieren autenticación
 
@@ -13,15 +13,15 @@ function MyApp({ Component, pageProps, router }: AppProps) {
 
   return (
     <SessionProvider session={pageProps.session}>
-      {isProtected ? (
-        <AuthGuard>
+      <AuthGuard>
+        {isProtected ? (
           <Layout>
             <Component {...pageProps} />{" "}
           </Layout>
-        </AuthGuard>
-      ) : (
-        <Component {...pageProps} />
-      )}
+        ) : (
+          <Component {...pageProps} />
+        )}
+      </AuthGuard>
     </SessionProvider>
   );
 }

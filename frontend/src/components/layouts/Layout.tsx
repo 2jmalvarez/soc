@@ -1,5 +1,5 @@
+import { Toaster } from "../ui/toaster";
 import Header from "./Header";
-import { Toaster } from "./ui/toaster";
 import React from "react";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {

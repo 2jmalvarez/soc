@@ -1,4 +1,4 @@
-import { LoadingSpinner } from "../LoadingSpinner";
+import { LoadingSpinner } from "../common/LoadingSpinner";
 import { Button } from "../ui";
 import {
   Dialog,

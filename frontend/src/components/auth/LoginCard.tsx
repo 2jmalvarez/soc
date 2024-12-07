@@ -1,7 +1,7 @@
 // frontend/src/components/LoginCard.tsx
 
-import { LoadingSpinner } from "./LoadingSpinner";
-import { Button, Input } from "./ui";
+import { LoadingSpinner } from "../common/LoadingSpinner";
+import { Button, Input } from "../ui";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";

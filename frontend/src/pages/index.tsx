@@ -1,5 +1,5 @@
 // frontend/src/pages/index.tsx
-import { LoginCard } from "@/components/LoginCard";
+import { LoginCard } from "@/components/auth/LoginCard";
 
 const HomePage = () => {
   return (

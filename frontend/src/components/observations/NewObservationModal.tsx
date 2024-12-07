@@ -1,6 +1,6 @@
 import { addObservation } from "@/services/api";
 import "@radix-ui/react-dialog";
-import { LoadingSpinner } from "../LoadingSpinner";
+import { LoadingSpinner } from "../common/LoadingSpinner";
 import { Button } from "../ui";
 import {
   DialogHeader,
@@ -64,12 +64,16 @@ export const NewObservationModal = () => {
           ...patientObservations,
           observations: [...patientObservations.observations, addedObservation],
         });
-        setIsOpen(false); // Cerrar el modal después de guardar
+        toast({
+          description: "Observación creada correctamente",
+        });
       }
+      setIsOpen(false);
     } catch (error) {
       console.error("Error adding observation:", error);
     } finally {
       setCargando(false);
+      setNewObservation(initObservation);
     }
   };
 
