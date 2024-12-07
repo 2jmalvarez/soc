@@ -17,7 +17,7 @@ const RoutesService = {
     res: Response,
     { message = "Error desconocido", status = 500, name }: ErrorType
   ) => {
-    console.log({ message, status, name });
+    console.log({ name, date: new Date().toLocaleString(), message, status });
 
     res.status(status).json({ message, error: name });
   },

@@ -21,14 +21,12 @@ export default async function handler(
       try {
         // Procesar la observación
         const { patient_id, ...observation } = req.body;
-        console.log({ observation });
 
         const newObservation = await postObservation({
           accessToken: token,
           patientId: patient_id,
           observation,
         }); // Función para guardar en DB
-        console.log({ newObservation });
 
         res.status(201).json(newObservation.data);
       } catch {
@@ -40,14 +38,12 @@ export default async function handler(
       try {
         // Procesar la observación
         const { id, ...observation } = req.body;
-        console.log({ observation });
 
         const newObservation = await putObservation({
           accessToken: token,
           observationId: id,
           observation,
         }); // Función para guardar en DB
-        console.log({ newObservation });
 
         res.status(201).json(newObservation.data);
       } catch {
@@ -60,13 +56,11 @@ export default async function handler(
       try {
         // Procesar la observación
         const { observationId } = req.body;
-        console.log({ observationId });
 
         const newObservation = await deleteObservation({
           accessToken: token,
           observationId: observationId,
         }); // Función para guardar en DB
-        console.log({ newObservation });
 
         res.status(201).json(newObservation.data);
       } catch {

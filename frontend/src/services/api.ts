@@ -23,7 +23,6 @@ export const getPatients = async (accessToken: string) => {
         },
       }
     );
-    console.log({ data: data.data[0] });
 
     return { data: data.data, error: false }; // Retorna los pacientes y una bandera para el error
   } catch (error) {
@@ -193,8 +192,6 @@ export async function removeObservation(
   accessToken: string,
   observationId: number
 ) {
-  console.log({ observationId });
-
   const response = await fetch("/api/observations", {
     method: "DELETE",
     headers: {

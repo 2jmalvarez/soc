@@ -19,7 +19,7 @@ import { ObservationType, PatientObservationsType } from "@/types/dto.type";
 import { FilePlusIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { v4 } from "uuid";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -257,11 +257,6 @@ const NewObservationModal = ({ patient_id }: { patient_id: number }) => {
       console.error("Error adding observation:", error);
     }
   };
-  useEffect(() => {
-    return () => {
-      setNewObservation(initObservation);
-    };
-  }, []);
   return (
     <Dialog>
       <DialogTrigger asChild className="cursor-pointer">
@@ -342,8 +337,9 @@ const EditObservationModal = ({
 }: {
   observation: ObservationType;
 }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { patient_id, user_id, ...initOnservation } = observation;
-  console.log({ patient_id, user_id });
+
   const [newObservation, setNewObservation] = useState(initOnservation);
   const [cargando, setCargando] = useState(false);
 
