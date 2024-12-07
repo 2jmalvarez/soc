@@ -8,7 +8,7 @@ export const CardObservation = ({
 }: {
   observation: ObservationType;
 }) => (
-  <div key={v4()} className="p-4 border rounded-md shadow">
+  <div key={v4()} className="p-4 border rounded-md shadow bg-white">
     <div className="flex justify-between">
       <div>
         <p>

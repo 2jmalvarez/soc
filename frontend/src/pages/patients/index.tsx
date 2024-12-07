@@ -1,3 +1,4 @@
+import { Background } from "@/components/layouts/Background";
 import { PatientCard } from "@/components/patients/Patient";
 import usePatientStore from "@/hooks/useStore";
 import { getPatients } from "@/services/api";
@@ -48,16 +49,18 @@ const PatientsPage = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patientsDto]);
   return (
-    <div>
+    <Background>
       <div className="container mx-auto p-6 pt-20">
-        <h1 className="text-2xl font-semibold">Lista de Pacientes</h1>
+        <h1 className="text-2xl font-semibold bg-slate-300 rounded p-2 w-fit ml-4">
+          Lista de Pacientes
+        </h1>
         <div className="mt-4 flex flex-wrap">
           {patients.map((patient) => (
             <PatientCard key={v4()} patient={patient} />
           ))}
         </div>
       </div>
-    </div>
+    </Background>
   );
 };
 

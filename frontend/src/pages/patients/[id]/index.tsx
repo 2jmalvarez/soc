@@ -1,7 +1,9 @@
 // frontend/src/pages/patients/[id].tsx
+// import { Background } from "@/components/layouts/Background";
 import { CardObservation } from "@/components/observations/CardObservation";
 import { NewObservationModal } from "@/components/observations/NewObservationModal";
 import { PatientCard } from "@/components/patients/Patient";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import usePatientStore from "@/hooks/useStore";
 import { getObservations } from "@/services/api";
 import { PatientObservationsType } from "@/types/dto.type";
@@ -61,27 +63,31 @@ export default function ObservationsPage({
 
   const { observations, ...patient } = patientObservations;
   return (
-    <div className="container mx-auto p-6 pt-20">
-      <div className="flex  justify-between">
-        <div className="w-full">
-          <PatientCard
-            patient={{ ...patient, observations: observations?.length }}
-          />
-          <h1 className="text-2xl font-bold mb-4">
-            Observaciones de <strong>{patientObservations?.name}</strong>
-          </h1>
-          <div className="flex justify-between w-full">
-            <h2 className="text-xl font-bold mb-2">
-              Lista de Observaciones (
-              {patientObservations?.observations?.length}){" "}
-            </h2>
+    <div>
+      <div className="container mx-auto p-6 pt-20">
+        <div className="flex  justify-between">
+          <div className="w-full">
+            <PatientCard
+              patient={{ ...patient, observations: observations?.length }}
+            />
+            <h1 className="text-2xl font-bold mb-4">
+              Observaciones de <strong>{patientObservations?.name}</strong>
+            </h1>
+            <div className="flex justify-between w-full">
+              <h2 className="text-xl font-bold mb-2 bg-white px-2 rounded">
+                Lista de Observaciones (
+                {patientObservations?.observations?.length}){" "}
+              </h2>
 
-            <NewObservationModal />
-          </div>
-          <div className=" pt-2  grid grid-cols-2 gap-6 w-full ">
-            {patientObservations?.observations?.toReversed()?.map((obs) => (
-              <CardObservation key={v4()} observation={obs} />
-            ))}
+              <NewObservationModal />
+            </div>
+            <ScrollArea>
+              <div className=" pt-2  grid grid-cols-2 gap-6 w-full ">
+                {patientObservations?.observations?.toReversed()?.map((obs) => (
+                  <CardObservation key={v4()} observation={obs} />
+                ))}
+              </div>
+            </ScrollArea>
           </div>
         </div>
       </div>

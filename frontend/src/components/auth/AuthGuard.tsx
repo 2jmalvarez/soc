@@ -1,4 +1,5 @@
 import { LoadingSpinner } from "../common/LoadingSpinner";
+import { Redirect } from "../layouts/Redirect";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
@@ -36,7 +37,7 @@ const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }
 
   if (!isAuthenticated) {
-    return <>redirigiend</>; // Evita mostrar el contenido hasta que se redirija
+    return <Redirect />; // Evita mostrar el contenido hasta que se redirija
   }
 
   return <>{children}</>;
