@@ -2,13 +2,14 @@ import { LoadingSpinner } from "../LoadingSpinner";
 import { Button } from "../ui";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import usePatientStore from "@/hooks/useStore";
 import { updateObservation } from "@/services/api";
 import { ObservationType } from "@/types/dto.type";
@@ -22,12 +23,14 @@ export const EditObservationModal = ({
   observation: ObservationType;
 }) => {
   const { patientObservations, setPatientObservations } = usePatientStore();
+  const { toast } = useToast();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { patient_id, user_id, ...initOnservation } = observation;
 
   const [newObservation, setNewObservation] = useState(initOnservation);
   const [cargando, setCargando] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -46,32 +49,46 @@ export const EditObservationModal = ({
 
     try {
       setCargando(true);
-      const updatedObservation = await updateObservation(
-        session.accessToken,
-        observation
-      );
-      if (updatedObservation) {
-        setCargando(false);
+      const {
+        data: updatedObservation,
+        error,
+        message,
+      } = await updateObservation(session.accessToken, observation);
 
+      if (error) {
+        toast({
+          title: "Error",
+          description: message,
+          variant: "destructive",
+        });
+      } else {
         setPatientObservations({
           ...patientObservations,
           observations: patientObservations.observations.map((obs) =>
             obs.id === updatedObservation.id ? updatedObservation : obs
           ),
         });
+
+        toast({
+          description: "Observación actualizada correctamente",
+        });
       }
     } catch (error) {
-      console.error("Error adding observation:", error);
+      console.error("Error editing observation:", error);
+    } finally {
+      setCargando(false);
     }
   };
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild className="cursor-pointer">
         <PencilIcon className="hover:text-green-500" />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Editar observación</DialogTitle>
+          <DialogDescription />
         </DialogHeader>
         <form className="mt-4 space-y-4">
           <div>
@@ -121,18 +138,16 @@ export const EditObservationModal = ({
           </div>
         </form>
         <DialogFooter>
-          <DialogClose asChild>
-            <Button
-              disabled={cargando}
-              onClick={() => handleSubmit(newObservation)}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              <div className="flex text-center">
-                {cargando && <LoadingSpinner color="text-white w-4 h-4" />}{" "}
-                Guardar
-              </div>
-            </Button>
-          </DialogClose>
+          <Button
+            disabled={cargando}
+            onClick={() => handleSubmit(newObservation)}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            <div className="flex text-center">
+              {cargando && <LoadingSpinner color="text-white w-4 h-4" />}{" "}
+              Guardar
+            </div>
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

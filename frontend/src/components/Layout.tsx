@@ -1,4 +1,5 @@
 import Header from "./Header";
+import { Toaster } from "./ui/toaster";
 import React from "react";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -6,6 +7,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <div>
       <Header />
       <main className="p-4">{children}</main>
+      <Toaster />
     </div>
   );
 };

@@ -8,7 +8,7 @@ export const CardObservation = ({
 }: {
   observation: ObservationType;
 }) => (
-  <li key={v4()} className="p-4 border rounded-md shadow">
+  <div key={v4()} className="p-4 border rounded-md shadow">
     <div className="flex justify-between">
       <div>
         <p>
@@ -36,5 +36,5 @@ export const CardObservation = ({
         <DeleteObservationModal id={observation.id} />
       </div>
     </div>
-  </li>
+  </div>
 );

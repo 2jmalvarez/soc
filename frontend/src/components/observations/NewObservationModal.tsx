@@ -9,8 +9,9 @@ import {
   DialogTrigger,
   DialogContent,
   DialogTitle,
-  DialogClose,
+  DialogDescription,
 } from "../ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import usePatientStore from "@/hooks/useStore";
 import { FilePlusIcon } from "lucide-react";
 import { getSession } from "next-auth/react";
@@ -18,7 +19,7 @@ import { useState } from "react";
 
 export const NewObservationModal = () => {
   const { patientObservations, setPatientObservations } = usePatientStore();
-
+  const { toast } = useToast();
   const initObservation = {
     observation_code: "",
     value: "",
@@ -26,6 +27,7 @@ export const NewObservationModal = () => {
   };
   const [newObservation, setNewObservation] = useState(initObservation);
   const [cargando, setCargando] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -42,32 +44,46 @@ export const NewObservationModal = () => {
 
     try {
       setCargando(true);
-      const addedObservation = await addObservation(session.accessToken, {
+      const {
+        data: addedObservation,
+        error,
+        message,
+      } = await addObservation(session.accessToken, {
         ...newObservation,
         patient_id: patientObservations.id,
-      }); // Pasando el token
-      if (addedObservation) {
-        setCargando(false);
+      });
 
+      if (error) {
+        toast({
+          title: "Error",
+          description: message,
+          variant: "destructive",
+        });
+      } else {
         setPatientObservations({
           ...patientObservations,
           observations: [...patientObservations.observations, addedObservation],
         });
+        setIsOpen(false); // Cerrar el modal después de guardar
       }
     } catch (error) {
       console.error("Error adding observation:", error);
+    } finally {
+      setCargando(false);
     }
   };
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild className="cursor-pointer">
-        <Button className="flex">
+        <Button className="flex" onClick={() => setIsOpen(true)}>
           <FilePlusIcon className="hover:text-blue-500" /> Nueva observación
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Agregar nueva observación</DialogTitle>
+          <DialogDescription />
         </DialogHeader>
         <form className="mt-4 space-y-4">
           <div>
@@ -117,18 +133,16 @@ export const NewObservationModal = () => {
           </div>
         </form>
         <DialogFooter>
-          <DialogClose asChild>
-            <Button
-              disabled={cargando}
-              onClick={() => handleSubmit()}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              <div className="flex text-center">
-                {cargando && <LoadingSpinner color="text-white w-4 h-4" />}{" "}
-                Guardar
-              </div>
-            </Button>
-          </DialogClose>
+          <Button
+            disabled={cargando}
+            onClick={() => handleSubmit()}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            <div className="flex text-center">
+              {cargando && <LoadingSpinner color="text-white w-4 h-4" />}{" "}
+              Guardar
+            </div>
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

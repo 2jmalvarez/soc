@@ -58,6 +58,24 @@ export const getObservations = async (accessToken: string, { id = "" }) => {
   }
 };
 
+const handleError = <T>(error: unknown) => {
+  if (axios.isAxiosError(error)) {
+    if (error.response?.data?.error === "TokenExpiredError") {
+      console.error("Token expired. Logging out...");
+    }
+    return {
+      data: [] as unknown as T,
+      error: true,
+      message: (error.response?.data?.message ?? "") as string,
+    };
+  }
+  return {
+    data: [] as unknown as T,
+    error: true,
+    message: "Error no controlado",
+  }; // Si hubo otro error, devolvemos datos vacíos
+};
+
 export const postObservation = async (props: {
   accessToken: string;
   patientId: string;
@@ -65,6 +83,7 @@ export const postObservation = async (props: {
 }) => {
   try {
     const { accessToken, patientId, observation } = props;
+
     const { data } = await api.post<{
       data: PatientObservationsType;
       error: boolean;
@@ -73,15 +92,10 @@ export const postObservation = async (props: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    return { data: data.data, error: false }; // Retorna los pacientes y una bandera para el error
+
+    return { data: data.data, error: false, message: "" }; // Retorna los pacientes y una bandera para el error
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      if (error.response?.data?.error === "TokenExpiredError") {
-        console.error("Token expired. Logging out...");
-        return { data: [], error: true }; // Devolvemos una bandera indicando que el token expiró
-      }
-    }
-    return { data: [], error: false }; // Si hubo otro error, devolvemos datos vacíos
+    return handleError<PatientObservationsType>(error);
   }
 };
 
@@ -100,15 +114,9 @@ export const putObservation = async (props: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    return { data: data.data, error: false }; // Retorna los pacientes y una bandera para el error
+    return { data: data.data, error: false, message: "" }; // Retorna los pacientes y una bandera para el error
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      if (error.response?.data?.error === "TokenExpiredError") {
-        console.error("Token expired. Logging out...");
-        return { data: [], error: true }; // Devolvemos una bandera indicando que el token expiró
-      }
-    }
-    return { data: [], error: false }; // Si hubo otro error, devolvemos datos vacíos
+    return handleError<PatientObservationsType>(error);
   }
 };
 
@@ -126,16 +134,20 @@ export const deleteObservation = async (props: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    return { data: data.data, error: false }; // Retorna los pacientes y una bandera para el error
+    return { data: data.data, error: false, message: "" }; // Retorna los pacientes y una bandera para el error
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      if (error.response?.data?.error === "TokenExpiredError") {
-        console.error("Token expired. Logging out...");
-        return { data: [], error: true }; // Devolvemos una bandera indicando que el token expiró
-      }
-    }
-    return { data: [], error: false }; // Si hubo otro error, devolvemos datos vacíos
+    return handleError<PatientObservationsType>(error);
   }
+};
+
+const handleResponse = async (response: Response) => {
+  const data = await response.json();
+
+  if (!response.ok) {
+    return { error: true, message: data, data: {} };
+  }
+
+  return { error: false, message: "", data };
 };
 
 export async function addObservation(
@@ -155,12 +167,7 @@ export async function addObservation(
     },
     body: JSON.stringify(observation),
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to add observation");
-  }
-
-  return await response.json();
+  return handleResponse(response);
 }
 
 export async function updateObservation(
@@ -180,12 +187,7 @@ export async function updateObservation(
     },
     body: JSON.stringify(observation),
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to edit observation");
-  }
-
-  return await response.json();
+  return handleResponse(response);
 }
 
 export async function removeObservation(
@@ -200,12 +202,7 @@ export async function removeObservation(
     },
     body: JSON.stringify({ observationId }),
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to edit observation");
-  }
-
-  return await response.json();
+  return handleResponse(response);
 }
 
 // api.interceptors.request.use(

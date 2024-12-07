@@ -73,11 +73,11 @@ export default function ObservationsPage({
 
             <NewObservationModal />
           </div>
-          <ul className="space-y-2 grid grid-cols-2 gap-4 w-full ">
+          <div className=" pt-2  grid grid-cols-2 gap-6 w-full ">
             {patientObservations?.observations?.toReversed()?.map((obs) => (
               <CardObservation key={v4()} observation={obs} />
             ))}
-          </ul>
+          </div>
         </div>
       </div>
     </div>

@@ -27,9 +27,14 @@ export default async function handler(
           patientId: patient_id,
           observation,
         }); // Función para guardar en DB
-
+        if (newObservation.error) {
+          res.status(400).json(newObservation.message);
+          return;
+        }
         res.status(201).json(newObservation.data);
       } catch {
+        console.log("Error");
+
         res.status(401).json({ error: "Unauthorized" });
       }
 
@@ -44,7 +49,10 @@ export default async function handler(
           observationId: id,
           observation,
         }); // Función para guardar en DB
-
+        if (newObservation.error) {
+          res.status(400).json(newObservation.message);
+          return;
+        }
         res.status(201).json(newObservation.data);
       } catch {
         res.status(401).json({ error: "Unauthorized" });
