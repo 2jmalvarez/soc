@@ -1,6 +1,6 @@
 import { CardObservation } from "@/components/observations/CardObservation";
 import { NewObservationModal } from "@/components/observations/NewObservationModal";
-import { PatientCard } from "@/components/patients/Patient";
+// import { PatientCard } from "@/components/patients/Patient";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import usePatientStore from "@/hooks/useStore";
 import { getObservations } from "@/services/backend";
@@ -85,15 +85,15 @@ export default function ObservationsPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [observationsCategories]);
 
-  const { observations, ...patient } = patientObservations;
+  // const { observations, ...patient } = patientObservations;
   return (
     <div>
-      <div className="container mx-auto p-6 pt-20">
+      <div className="container mx-auto p-6 pt-28">
         <div className="flex  justify-between">
           <div className="w-full">
-            <PatientCard
+            {/* <PatientCard
               patient={{ ...patient, observations: observations?.length }}
-            />
+            /> */}
             <h1 className="text-2xl font-bold mb-4">
               Observaciones de <strong>{patientObservations?.name}</strong>
             </h1>

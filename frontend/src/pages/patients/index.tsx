@@ -1,4 +1,4 @@
-import { Background } from "@/components/layouts/Background";
+// import { Background } from "@/components/layouts/Background";
 import { PatientCard } from "@/components/patients/Patient";
 import usePatientStore from "@/hooks/useStore";
 import { getPatients } from "@/services/backend";
@@ -49,8 +49,8 @@ const PatientsPage = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patientsDto]);
   return (
-    <Background>
-      <div className="container mx-auto flex flex-col justify-start self-start p-6 pt-20">
+    <div>
+      <div className="container mx-auto flex flex-col justify-start self-start p-6 pt-28">
         <h1 className="text-2xl font-semibold bg-slate-300 rounded p-2 w-fit ml-4">
           Lista de Pacientes
         </h1>
@@ -60,7 +60,7 @@ const PatientsPage = ({
           ))}
         </div>
       </div>
-    </Background>
+    </div>
   );
 };
 
