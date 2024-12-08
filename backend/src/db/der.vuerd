@@ -365,7 +365,7 @@
       "wWq8PLhXCvG-FtCqi-qRQ": {
         "id": "wWq8PLhXCvG-FtCqi-qRQ",
         "tableId": "Qm_TNlber5s-8zdj0dFIu",
-        "name": "observation_code",
+        "name": "code",
         "comment": "",
         "dataType": "varchar(50)",
         "default": "",

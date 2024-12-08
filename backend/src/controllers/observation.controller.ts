@@ -25,34 +25,30 @@ export const getObservations = async (req: Request, res: Response) => {
 // Añade una nueva observación
 export const addObservation = async (req: Request, res: Response) => {
   try {
-    RoutesService.validationParams(req.params, idSchema);
-    RoutesService.validationBody(req.body, baseObservationSchema);
-    const { id: patientId } = req.params;
-    const { observation_code } = req.body;
     const user_id = RoutesService.getUserId(req);
 
+    RoutesService.validationParams(req.params, idSchema);
+    const { id: patient_id } = req.params;
+
+    RoutesService.validationBody(req.body, baseObservationSchema);
+    const {
+      code,
+      value,
+      date,
+      status = "final",
+      category,
+      components,
+    } = req.body;
+
     const observation = await ObservationModel.create({
-      category: "vital-signs",
-      components: [
-        {
-          code: "8480-6",
-          display: "Systolic Blood Pressure",
-          value: 120,
-          unit: "mmHg",
-        },
-        {
-          code: "8462-4",
-          display: "Diastolic Blood Pressure",
-          value: 80,
-          unit: "mmHg",
-        },
-      ],
-      date: new Date().toISOString(),
-      observation_code,
-      patient_id: patientId,
-      status: "final",
-      user_id: user_id,
-      value: null,
+      patient_id,
+      user_id,
+      code,
+      value,
+      date,
+      status,
+      category,
+      components,
     });
 
     RoutesService.responseSuccess(res, observation, 201);
@@ -67,18 +63,40 @@ export const addObservation = async (req: Request, res: Response) => {
 export const addObservationFhir = async (req: Request, res: Response) => {
   try {
     RoutesService.validationParams(req.params, idSchema);
-    const { id: patientId } = req.params;
+    const { id: patient_id } = req.params;
     RoutesService.validationBody(req.body, baseObservationSchema);
-    const { observation_code, value, date } = req.body;
+    const {
+      code,
+      value,
+      date,
+      status = "final",
+      category,
+      components,
+    } = req.body;
     const user_id = RoutesService.getUserId(req);
+    console.log({
+      code,
+      value,
+      date,
+      status,
+      category,
+      components,
+    });
 
-    const observation = ObservationService.createFhir({
-      status: "final",
+    const observation = ObservationModel.create({
+      patient_id,
+      user_id,
+      code,
+      value,
+      date,
+      status,
+      category,
+      components,
     });
 
     // const observation = await ObservationModel.create({
     //   patientId: +patientId,
-    //   observation_code,
+    //   code,
     //   value,
     //   date,
     //   user_id,
@@ -98,7 +116,7 @@ export const updateObservation = async (req: Request, res: Response) => {
     RoutesService.validationParams(req.params, idSchema);
     RoutesService.validationBody(req.body, baseObservationSchema);
     const { id: observationId } = req.params;
-    const { observation_code, value, date } = req.body;
+    const { code, value, date, status, category, components } = req.body;
     const user_id = RoutesService.getUserId(req);
 
     const observation = await ObservationModel.findOneById(observationId);
@@ -106,7 +124,7 @@ export const updateObservation = async (req: Request, res: Response) => {
 
     const editedObservation = await ObservationModel.update({
       id: observationId,
-      observation_code,
+      code,
       value,
       date,
       patient_id: observation.patient_id,

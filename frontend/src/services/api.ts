@@ -36,7 +36,7 @@ export const api = axios.create({
 export async function addObservation(
   accessToken: string,
   observation: {
-    observation_code: string;
+    code: string;
     value: string;
     date: string;
     patient_id: number;
@@ -58,7 +58,7 @@ export async function addObservation(
 export async function updateObservation(
   accessToken: string,
   observation: {
-    observation_code: string;
+    code: string;
     value: string;
     date: string;
     id: number;

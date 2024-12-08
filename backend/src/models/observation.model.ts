@@ -12,7 +12,7 @@ const ObservationModel = {
   async create({
     patient_id,
     user_id,
-    observation_code,
+    code,
     value,
     date,
     status,
@@ -26,17 +26,18 @@ const ObservationModel = {
       await client.query("BEGIN");
 
       const observationId = v4();
+      console.log({ value });
 
       // Inserta la observación principal
       const queryObservation = `
-        INSERT INTO observations (id, patient_id, user_id, observation_code, value, date, status, category) 
+        INSERT INTO observations (id, patient_id, user_id, code, value, date, status, category) 
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
         RETURNING *`;
       const { rows: observationRows } = await client.query(queryObservation, [
         observationId,
         patient_id,
         user_id,
-        observation_code,
+        code,
         value,
         date,
         status,
@@ -48,15 +49,14 @@ const ObservationModel = {
       // Inserta los componentes si los hay
       if (components && components.length > 0) {
         const queryComponent = `
-          INSERT INTO observation_components (id, observation_id, code, display, value, unit) 
-          VALUES ($1, $2, $3, $4, $5, $6)`;
+          INSERT INTO observation_components (id, observation_id, code, value, unit) 
+          VALUES ($1, $2, $3, $4, $5)`;
         for (const component of components) {
           const componentId = v4();
           await client.query(queryComponent, [
             componentId,
             observationId,
             component.code,
-            component.display,
             component.value,
             component.unit,
           ]);
@@ -81,18 +81,13 @@ const ObservationModel = {
 
   async update({
     id,
-    observation_code,
+    code,
     value,
     date,
   }: Observations): Promise<Observations | null> {
     const query =
-      "UPDATE observations SET observation_code = $1, value = $2, date = $3 WHERE id = $4 RETURNING *";
-    const { rows } = await pool.query(query, [
-      observation_code,
-      value,
-      date,
-      id,
-    ]);
+      "UPDATE observations SET code = $1, value = $2, date = $3 WHERE id = $4 RETURNING *";
+    const { rows } = await pool.query(query, [code, value, date, id]);
     return rows.length > 0 ? rows[0] : null;
   },
 

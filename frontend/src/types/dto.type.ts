@@ -1,6 +1,6 @@
 export type ObservationType = {
   id: number;
-  observation_code: string;
+  code: string;
   value: string;
   date: string;
   patient_id: number;

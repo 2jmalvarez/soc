@@ -1,14 +1,14 @@
 export interface ObservationComponents {
   id: string;
   code: string;
-  display: string;
   value: number;
   unit: string;
   observation_id: string;
 }
+
 export interface Observations {
   id: string;
-  observation_code: string;
+  code: string;
   value: string | null;
   date: string | null;
   status: string;

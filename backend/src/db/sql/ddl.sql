@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS users CASCADE;
 
 CREATE TABLE observations (
   id int NOT NULL GENERATED ALWAYS AS IDENTITY UNIQUE,
-  observation_code varchar(50) NOT NULL,
+  code varchar(50) NOT NULL,
   value varchar(255) NOT NULL,
   date timestamp DEFAULT CURRENT_TIMESTAMP,
   patient_id int NOT NULL,

@@ -15,7 +15,7 @@ export const CardObservation = ({
           <strong>ID:</strong> {observation.id}
         </p>
         <p>
-          <strong>Code:</strong> {observation.observation_code}
+          <strong>Code:</strong> {observation.code}
         </p>
         <p>
           <strong>Value:</strong> {observation.value}

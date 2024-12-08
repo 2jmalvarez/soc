@@ -8,13 +8,6 @@ export const componentsObservationSchema = Joi.object({
     "string.max": "El código no debe tener más de {#limit} caracteres",
     "any.required": "El código es un campo requerido",
   }),
-  display: Joi.string().min(1).max(100).required().messages({
-    "string.base": "El display debe ser un texto",
-    "string.empty": "El display no debe estar vacío",
-    "string.min": "El display debe tener al menos {#limit} caracteres",
-    "string.max": "El display no debe tener más de {#limit} caracteres",
-    "any.required": "El display es un campo requerido",
-  }),
   value: Joi.number().precision(2).min(0).required().messages({
     "number.base": "El valor debe ser un número",
     "number.min": "El valor debe ser al menos {#limit}",
@@ -30,7 +23,7 @@ export const componentsObservationSchema = Joi.object({
 });
 
 export const baseObservationSchema = Joi.object({
-  observation_code: Joi.string().min(3).max(100).required().messages({
+  code: Joi.string().min(3).max(100).required().messages({
     "string.base": "El código de la observación debe ser un texto",
     "string.empty": "El código de la observación no debe estar vacío",
     "string.min":
@@ -62,16 +55,24 @@ export const baseObservationSchema = Joi.object({
     "any.required": "La fecha de la observación es un campo requerido",
   }),
 
-  status: Joi.string().valid("final", "preliminary").required().messages({
+  status: Joi.string().valid("final", "preliminary", "").messages({
     "string.base": "El estado de la observación debe ser un texto",
-    "string.empty": "El estado de la observación no debe estar vacío",
     "string.valid":
       "El estado de la observación debe ser 'final' o 'preliminary'",
-    "any.required": "El estado de la observación es un campo requerido",
   }),
 
   category: Joi.string()
-    .valid("vital-signs", "laboratory")
+    .valid(
+      "social-history",
+      "vital-signs",
+      "imaging",
+      "laboratory",
+      "procedure",
+      "survey",
+      "exam",
+      "therapy",
+      "activity"
+    )
     .required()
     .messages({
       "string.base": "La categoría de la observación debe ser un texto",
@@ -84,6 +85,5 @@ export const baseObservationSchema = Joi.object({
   components: Joi.array().items(componentsObservationSchema).messages({
     "array.base": "Los componentes deben ser un array",
     "array.includes": "Cada componente debe ser válido",
-    "any.required": "Los componentes son un campo requerido",
   }),
 });

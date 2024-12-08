@@ -5,7 +5,7 @@ export interface Observation {
   id: string;
   patient_id: string;
   user_id: string;
-  observation_code: string;
+  code: string;
   value: string | null;
   date: string;
   status: string;
@@ -26,7 +26,7 @@ const ObservationModel = {
   async create({
     patient_id,
     user_id,
-    observation_code,
+    code,
     value,
     date,
     status,
@@ -41,14 +41,14 @@ const ObservationModel = {
 
       // Inserta la observación principal
       const queryObservation = `
-        INSERT INTO observations (id, patient_id, user_id, observation_code, value, date, status, category) 
+        INSERT INTO observations (id, patient_id, user_id, code, value, date, status, category) 
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
         RETURNING *`;
       const { rows: observationRows } = await client.query(queryObservation, [
         observationId,
         patient_id,
         user_id,
-        observation_code,
+        code,
         value,
         date,
         status,

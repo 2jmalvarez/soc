@@ -93,14 +93,14 @@ export const EditObservationModal = ({
         </DialogHeader>
         <form className="mt-4 space-y-4">
           <div>
-            <label htmlFor="observation_code" className="block font-semibold">
+            <label htmlFor="code" className="block font-semibold">
               Código
             </label>
             <input
-              id="observation_code"
-              name="observation_code"
+              id="code"
+              name="code"
               type="text"
-              value={newObservation.observation_code}
+              value={newObservation.code}
               onChange={handleInputChange}
               className="w-full p-2 border rounded"
               required

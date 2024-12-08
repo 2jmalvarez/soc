@@ -11,17 +11,30 @@ import {
   DialogTitle,
   DialogDescription,
 } from "../ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { useToast } from "@/hooks/use-toast";
 import usePatientStore from "@/hooks/useStore";
 import { FilePlusIcon } from "lucide-react";
 import { getSession } from "next-auth/react";
 import { useState } from "react";
+import { v4 } from "uuid";
 
 export const NewObservationModal = () => {
-  const { patientObservations, setPatientObservations } = usePatientStore();
+  const {
+    patientObservations,
+    setPatientObservations,
+    observationsCategories,
+  } = usePatientStore();
   const { toast } = useToast();
   const initObservation = {
-    observation_code: "",
+    category: "",
+    code: "",
     value: "",
     date: "",
   };
@@ -76,7 +89,7 @@ export const NewObservationModal = () => {
       setCargando(false);
     }
   };
-
+  console.log({ observationsCategories });
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild className="cursor-pointer">
@@ -91,14 +104,35 @@ export const NewObservationModal = () => {
         </DialogHeader>
         <form className="mt-4 space-y-4">
           <div>
-            <label htmlFor="observation_code" className="block font-semibold">
+            <label htmlFor="category" className="block font-semibold">
+              Categoría
+            </label>
+            <Select
+              onValueChange={(category) =>
+                setNewObservation((prev) => ({ ...prev, category }))
+              }
+            >
+              <SelectTrigger className="w-[280px]">
+                <SelectValue placeholder="Seleccioná una categoría" />
+              </SelectTrigger>
+              <SelectContent>
+                {observationsCategories.map((category) => (
+                  <SelectItem value={category.code} key={v4()}>
+                    {category.display}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <label htmlFor="code" className="block font-semibold">
               Código
             </label>
             <input
-              id="observation_code"
-              name="observation_code"
+              id="code"
+              name="code"
               type="text"
-              value={newObservation.observation_code}
+              value={newObservation.code}
               onChange={handleInputChange}
               className="w-full p-2 border rounded"
               required

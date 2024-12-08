@@ -1,4 +1,5 @@
 import { PatientObservationsType, PatientTypeDto } from "@/types/dto.type";
+import { ObservationCategoryType } from "@/types/fhir.type";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
@@ -9,8 +10,9 @@ interface Store {
   setPatientObservations: (
     patientObservations: PatientObservationsType
   ) => void;
+  observationsCategories: ObservationCategoryType[];
+  setObservationsCategories: (o: ObservationCategoryType[]) => void;
 }
-
 //TODO: separar en dos stores
 //TODO: ver inferencia de tipos
 const usePatientStore = create<Store>()(
@@ -20,6 +22,9 @@ const usePatientStore = create<Store>()(
     patientObservations: {} as PatientObservationsType,
     setPatientObservations: (patientObservations) =>
       set({ patientObservations }),
+    observationsCategories: [],
+    setObservationsCategories: (observationsCategories) =>
+      set({ observationsCategories }),
   }))
 );
 

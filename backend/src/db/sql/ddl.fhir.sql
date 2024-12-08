@@ -6,6 +6,27 @@ DROP TABLE IF EXISTS patients CASCADE;
 
 DROP TABLE IF EXISTS users CASCADE;
 
+CREATE TABLE observation_components (
+  id uuid NOT NULL,
+  code varchar(50) NOT NULL,
+  value decimal NOT NULL,
+  unit varchar(50) NOT NULL,
+  observation_id uuid NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE observations (
+  id uuid NOT NULL,
+  code varchar(50) NOT NULL,
+  value varchar(255),
+  date timestamp DEFAULT CURRENT_TIMESTAMP,
+  status varchar(20) NOT NULL,
+  category varchar(50) NOT NULL,
+  patient_id uuid NOT NULL,
+  user_id uuid NOT NULL,
+  PRIMARY KEY (id)
+);
+
 CREATE TABLE patients (
   id uuid NOT NULL,
   name varchar(100) NOT NULL,
@@ -21,28 +42,6 @@ CREATE TABLE users (
   email varchar(150) NOT NULL UNIQUE,
   password varchar(255) NOT NULL,
   jwt_token text,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE observations (
-  id uuid NOT NULL,
-  observation_code varchar(50) NOT NULL,
-  value varchar(255),
-  date timestamp DEFAULT CURRENT_TIMESTAMP,
-  status varchar(20) NOT NULL,
-  category varchar(50) NOT NULL,
-  patient_id uuid NOT NULL,
-  user_id uuid NOT NULL,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE observation_components (
-  id uuid NOT NULL,
-  code varchar(50) NOT NULL,
-  display varchar(255) NOT NULL,
-  value decimal NOT NULL,
-  unit varchar(50) NOT NULL,
-  observation_id uuid NOT NULL,
   PRIMARY KEY (id)
 );
 

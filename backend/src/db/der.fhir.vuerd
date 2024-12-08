@@ -4,9 +4,9 @@
   "settings": {
     "width": 2000,
     "height": 2000,
-    "scrollTop": -3,
-    "scrollLeft": -2,
-    "zoomLevel": 1,
+    "scrollTop": 0,
+    "scrollLeft": -313.1779,
+    "zoomLevel": 0.76,
     "show": 511,
     "database": 16,
     "databaseName": "soc_g3kp",
@@ -154,7 +154,6 @@
         "columnIds": [
           "o3AeCK6-nee0Jcqu44K9r",
           "t_gX50GJdzqoBdk5lUM1-",
-          "FOmjYrPLdI-kQjlN8wqW9",
           "gtS1NyiW0W1C1OifIHg1b",
           "jWfYHmLDw_c4TfzWx1Cxr",
           "gvjV2zCfUbbYo5qnQ8YHG"
@@ -177,7 +176,7 @@
           "color": ""
         },
         "meta": {
-          "updateAt": 1733601958187,
+          "updateAt": 1733616100658,
           "createAt": 1733601890070
         }
       }
@@ -446,20 +445,20 @@
       "e9j3XtlfoDUkGV9f08uzo": {
         "id": "e9j3XtlfoDUkGV9f08uzo",
         "tableId": "DrS3-NAnQ2oBzt-NTnrKu",
-        "name": "observation_code",
+        "name": "code",
         "comment": "",
         "dataType": "varchar(50)",
         "default": "",
         "options": 8,
         "ui": {
           "keys": 0,
-          "widthName": 95,
+          "widthName": 60,
           "widthComment": 60,
           "widthDataType": 61,
           "widthDefault": 60
         },
         "meta": {
-          "updateAt": 1733601890069,
+          "updateAt": 1733616131696,
           "createAt": 1733601890069
         }
       },
@@ -744,7 +743,7 @@
           "columnIds": [
             "084Ih91ouVzUTuwU86bU6"
           ],
-          "x": 301,
+          "x": 283.5,
           "y": 318,
           "direction": 4
         },
@@ -772,7 +771,7 @@
           "columnIds": [
             "N_QOf3Hl2jnT379KUYeTZ"
           ],
-          "x": 562,
+          "x": 527,
           "y": 380,
           "direction": 2
         },
@@ -791,7 +790,7 @@
           "columnIds": [
             "qG-_Nk_LbTu9UHBYs1OGO"
           ],
-          "x": 562,
+          "x": 527,
           "y": 504,
           "direction": 2
         },
@@ -801,7 +800,7 @@
             "gvjV2zCfUbbYo5qnQ8YHG"
           ],
           "x": 803,
-          "y": 468,
+          "y": 456,
           "direction": 1
         },
         "meta": {
@@ -917,6 +916,20 @@
       -1,
       {
         "options(notNull)": 1733601973972
+      }
+    ],
+    "FOmjYrPLdI-kQjlN8wqW9": [
+      "tableColumnEntities",
+      -1,
+      1733616100657,
+      {}
+    ],
+    "e9j3XtlfoDUkGV9f08uzo": [
+      "tableColumnEntities",
+      -1,
+      -1,
+      {
+        "name": 1733616131695
       }
     ]
   }

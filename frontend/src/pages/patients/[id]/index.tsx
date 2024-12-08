@@ -5,6 +5,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import usePatientStore from "@/hooks/useStore";
 import { getObservations } from "@/services/backend";
 import { PatientObservationsType } from "@/types/dto.type";
+import { ObservationCategoryType } from "@/types/fhir.type";
+import axios from "axios";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import { useEffect } from "react";
@@ -43,21 +45,45 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
+  const apiObservationsCategories = await axios.get(
+    "https://terminology.hl7.org/6.1.0/CodeSystem-observation-category.json"
+  );
+
+  const categories: ObservationCategoryType =
+    apiObservationsCategories.data.concept;
+
+  console.log({
+    categories,
+  });
+
   return {
-    props: { patientObservations: data }, // Pasamos solo los datos
+    props: { patientObservations: data, categories }, // Pasamos solo los datos
   };
 };
 
 export default function ObservationsPage({
   patientObservations: patientObservationsDto,
-}: {
-  readonly patientObservations: PatientObservationsType;
-}) {
-  const { patientObservations, setPatientObservations } = usePatientStore();
+  categories,
+}: Readonly<{
+  patientObservations: PatientObservationsType;
+  categories: ObservationCategoryType[];
+}>) {
+  const {
+    patientObservations,
+    setPatientObservations,
+    observationsCategories,
+    setObservationsCategories,
+  } = usePatientStore();
+
   useEffect(() => {
     setPatientObservations(patientObservationsDto);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patientObservationsDto]);
+
+  useEffect(() => {
+    setObservationsCategories(categories);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [observationsCategories]);
 
   const { observations, ...patient } = patientObservations;
   return (

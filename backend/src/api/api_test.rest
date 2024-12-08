@@ -54,34 +54,57 @@ Authorization: Bearer {{token}}
 GET {{baseUrl}}/patients
 Authorization: Bearer {{token}}
 
+### Patient ID
+@patientId = fb2cb47e-1c98-4453-8941-82f56f46cec0
 
 ### Obtener un paciente por ID
-GET {{baseUrl}}/patients/100
+GET {{baseUrl}}/patients/{{patientId}}
 Authorization: Bearer {{token}}
 
 
 ### Obtener todas las observaciones de un paciente
-GET {{baseUrl}}/patients/:id/observations
+GET {{baseUrl}}/patients/{{patientId}}/observations
 Authorization: Bearer {{token}}
 
 
 ### Crear una nueva observación clínica para un paciente
-POST {{baseUrl}}/patients/:id/observations
+POST {{baseUrl}}/patients/{{patientId}}/observations
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "type": "Blood Pressure",
-  "value": "120/80",
-  "unit": "mmHg",
-  "date": "2024-11-29T10:00:00Z"
+  "code": "122345",
+  "value": "178.6",
+  "date": "2023-12-01T10:00:00Z",
+  "status": "final",
+  "category": "vital-signs",
+  "components": [
+    {
+      "code": "heart-rate",
+      "value": 172,
+      "unit": "bpm"
+    }
+   
+  ]
+}
+### Crear una nueva observación clínica para un paciente
+POST {{baseUrl}}/patients/{{patientId}}/observations
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "code": "122345",
+  "value": "178.6",
+  "date": "2023-12-01T10:00:00Z",
+  "status": "final",
+  "category": "vital-signs"
 }
 
 
 # Rutas de observaciones
 
 ### Actualizar una observación existente
-PUT {{baseUrl}}/observations/:id
+PUT {{baseUrl}}/observations/{{patientId}}
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
@@ -92,7 +115,7 @@ Authorization: Bearer {{token}}
 
 
 ### Eliminar una observación
-DELETE {{baseUrl}}/observations/:id
+DELETE {{baseUrl}}/observations/{{patientId}}
 Authorization: Bearer {{token}}
 
 
@@ -104,7 +127,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "observation_code":"213", 
+  "code":"213", 
   "value":"12", 
   "date":"2024-11-29T10:00:00Z"
 }
