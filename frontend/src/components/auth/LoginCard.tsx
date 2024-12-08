@@ -3,7 +3,7 @@
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { Button, Input } from "../ui";
 import { useToast } from "@/hooks/use-toast";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -41,6 +41,22 @@ export const LoginCard = () => {
     }
   };
   useEffect(() => {
+    const token = session?.accessToken;
+
+    if (token) {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const expires = new Date(payload.exp * 1000);
+      if (new Date(expires) < new Date()) {
+        toast({
+          title: "Sesión Expirada",
+          description:
+            "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.",
+          variant: "destructive",
+        });
+        signOut();
+      }
+    }
+
     if (session) {
       router.push("/patients"); // Redirige al login si no está autenticado
     }

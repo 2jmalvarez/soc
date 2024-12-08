@@ -39,16 +39,12 @@ export const authOptions = {
   callbacks: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async jwt({ token, user }: { token: JWT; user?: any }) {
-      // console.log("jwt", { token, user });
-
       if (user) {
         token.accessToken = user.token;
       }
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
-      // console.log("session", { session, token });
-
       if (typeof token.accessToken === "string") {
         session.accessToken = token.accessToken;
       }

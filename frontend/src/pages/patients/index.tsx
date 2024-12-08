@@ -25,6 +25,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   if (error) {
     // Si el token ha expirado, redirigir al login desde el servidor
+
     return {
       redirect: {
         destination: "/", // Redirigir al login

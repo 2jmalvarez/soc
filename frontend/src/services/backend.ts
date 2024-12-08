@@ -16,7 +16,9 @@ export const backend = axios.create({
 export const handleErrorBack = <T>(error: unknown) => {
   if (axios.isAxiosError(error)) {
     const tokenExpired = error.response?.data?.error === "TokenExpiredError";
+
     if (tokenExpired) console.error("Token expired. Logging out...");
+
     return {
       data: [] as unknown as T,
       error: true,
@@ -55,6 +57,8 @@ export const getPatients = async (accessToken: string) => {
 
     return handleResponseBack<PatientType[]>(res);
   } catch (error) {
+    console.error("Error en getPatients", error);
+
     return handleErrorBack<PatientType[]>(error);
   }
 };
