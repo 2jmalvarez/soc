@@ -56,6 +56,9 @@ ADD
   CONSTRAINT FK_users_TO_observations FOREIGN KEY (user_id) REFERENCES users (id);
 
 ALTER TABLE
+  observation_components DROP CONSTRAINT IF EXISTS FK_observations_TO_observation_components;
+
+ALTER TABLE
   observation_components
 ADD
-  CONSTRAINT FK_observations_TO_observation_components FOREIGN KEY (observation_id) REFERENCES observations (id);
+  CONSTRAINT FK_observations_TO_observation_components FOREIGN KEY (observation_id) REFERENCES observations (id) ON DELETE CASCADE;

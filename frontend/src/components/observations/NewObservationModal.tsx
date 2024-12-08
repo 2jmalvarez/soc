@@ -89,7 +89,7 @@ export const NewObservationModal = () => {
       setCargando(false);
     }
   };
-  console.log({ observationsCategories });
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild className="cursor-pointer">

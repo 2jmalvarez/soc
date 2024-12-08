@@ -108,7 +108,11 @@ export default function ObservationsPage({
             <ScrollArea>
               <div className=" pt-2  grid grid-cols-2 gap-6 w-full ">
                 {patientObservations?.observations?.toReversed()?.map((obs) => (
-                  <CardObservation key={v4()} observation={obs} />
+                  <CardObservation
+                    key={v4()}
+                    observation={obs}
+                    categories={categories}
+                  />
                 ))}
               </div>
             </ScrollArea>

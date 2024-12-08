@@ -5,6 +5,7 @@ export type ObservationType = {
   date: string;
   patient_id: number;
   user_id: number;
+  category: string;
 };
 
 export type PatientType = {
