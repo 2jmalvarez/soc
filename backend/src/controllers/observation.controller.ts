@@ -115,6 +115,7 @@ export const addObservationFhir = async (req: Request, res: Response) => {
   }
 };
 
+//TODO: Eliminar, se reemplaza por updateObservationFhir
 // Actualiza una observación existente
 export const updateObservation = async (req: Request, res: Response) => {
   try {

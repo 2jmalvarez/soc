@@ -1,5 +1,4 @@
- 
-
+//TODO: Cambiar nombre a .type.ts
 export interface Observation {
   id: string;
   patient_id: string;
@@ -19,4 +18,3 @@ export interface Component {
   value: number;
   unit: string;
 }
- 

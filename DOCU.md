@@ -21,8 +21,8 @@ Se optó por **Node.js** con **Express** debido a:
 El backend sigue una arquitectura basada en controladores, servicios y modelos:
 
 - **Controladores**: Manejan las solicitudes HTTP y responden con datos JSON.
-- **Servicios**: Implementan la lógica de negocio, como validaciones FHIR.
-- **Modelos**: Definen el esquema de la base de datos utilizando **Sequelize** para PostgreSQL.
+- **Servicios**: Implementan la lógica de negocio.
+- **Modelos**: Implementan los metodos que interactuan directamente con la DB
 
 ### 3. Endpoints
 
@@ -49,11 +49,11 @@ Se implementaron los siguientes endpoints:
   - `DELETE /observations/:id`: Elimina una observación clínica.
   - `GET /observations/:id/fhir`: Muestra una observación en fomato fhir lista para interoperar
 
-Para realizar peticiones a la api se utilizó [REST Client]() la cual permite hacer pruebas dentro la herramienta y los metodos quedan guardados en el proyecto
+Para realizar peticiones a la api se utilizó [REST Client]() la cual permite hacer pruebas dentro del vsc, con el valor agregado que los metodos utilizados quedan guardados en el proyecto
 
 ![1733720635533](image/DOCU/1733720635533.png)
 
-_Se pueden crear pacientes de prueba ejecutando primero "Generar un nombre aleatorio en español utilizando un servicio externo", esto completa la variable que comienzan con random y luego ejecutar "Crear un nuevo paciente"_
+_Se pueden crear pacientes de prueba ejecutando primero "Generar un nombre aleatorio en español utilizando un servicio externo", esto completa la variable que comienzan con random y luego ejecutar "Crear un nuevo paciente", para hacer esto primero tenes que ejecutar el metodo del login (linea 17) para que se cargue la variable del token._
 
 ### 4. Base de Datos
 
@@ -93,10 +93,12 @@ _Ejecutando ddl.fhir.sql se genera el modelo automaticamente en la db ( cuidado 
     ![1733722607472](image/DOCU/1733722607472.png)
   - Todos los metodos verifican si cumplen con los los esquemas de parametros y body generando los errores segun la configuracion del esquema
   - Se crearon funciones para estandarizar el manejo de rutas garantizando siempre la misma estructura de respuesta exitosa y fallida
+  - Hay un middleware final para el manejo de errores no controlados
 
 ### 5. Autenticación y Autorización
 
 - **JWT** se utilizó para autenticar solicitudes.
+- La autenticacion se maneja por un middleware
 - Los endpoints protegidos verifican:
   - Si el token es válido.
   - Si el token no está vencido
