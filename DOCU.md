@@ -172,16 +172,6 @@ Se seleccionó **Next.js** (React) por:
 - Tokens JWT con tiempos de expiración.
 - Sanitización de entradas para prevenir inyecciones SQL/XSS.
 
-### 3. Testing
-
-- Pruebas unitarias en backend con **Jest** para:
-  - Validación de recursos FHIR.
-  - Manejo de JWT.
-  - Lógica CRUD de observaciones.
-- Pruebas de integración con **Postman** para los endpoints clave.
-
----
-
 ## Documentación
 
 Aparte de este documento tambien se creó un archivo `README.md` con:
