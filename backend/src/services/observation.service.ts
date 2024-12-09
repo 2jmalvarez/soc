@@ -22,7 +22,6 @@ const ObservationService = {
       );
 
       const baseLoinc = await loadLoincCsvToArray();
-      console.log({ user });
 
       const fhirObservation: fhirR4.Observation = {
         resourceType: "Observation",
