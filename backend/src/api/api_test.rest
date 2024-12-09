@@ -134,7 +134,7 @@ Authorization: Bearer {{token}}
  
 
 ### Ver observacion en Fhir
-GET {{baseUrl}}/observations/fhir/b96e59cf-ba79-4ef2-a7d4-c028d3344c7d
+GET {{baseUrl}}/observations/b96e59cf-ba79-4ef2-a7d4-c028d3344c7d/fhir
 Content-Type: application/json
 Authorization: Bearer {{token}}
  
