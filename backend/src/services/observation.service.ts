@@ -1,75 +1,106 @@
 import ObservationModel from "./../models/observation.model";
-import PatientModel, { Patient } from "../models/patient.model";
-import dayjs from "dayjs";
+import PatientModel from "../models/patient.model";
+
 import { ValidationError } from "./error.service";
 import { fhirR4 } from "@smile-cdr/fhirts";
+import { loadLoincCsvToArray } from "../utils/loincLoader";
+import UserModel from "../models/user.model";
 
 // Crear paciente
 
 const ObservationService = {
-  // async createFhir({
-  //   patient_id,
-  //   user_id,
-  //   code,
-  //   value,
-  //   date,
-  //   status,
-  //   category,
-  //   components,
-  // }: {
-  //   patient_id: string;
-  //   user_id: string;
-  //   code: string;
-  //   value: string
-  //   date: string;
-  //   status: string;
-  //   category: string;
-  //   components: any;
-  // } ) {
-  //   try {
-  //     // const newObservation = new fhirR4.Observation();
+  getFhir: async (observationId: string) => {
+    try {
+      const observation = await ObservationModel.findOneById(observationId);
+      if (!observation) throw new ValidationError("Observation not found");
 
-  //     // newObservation.status = status;
-  //     // newObservation.code = new fhirR4.CodeableConcept();
-  //     // newObservation.code.text = "Paciente";
-  //     // newObservation.subject = new fhirR4.Reference();
-  //     // newObservation.subject.reference = `Patient/${patient.id}`;
+      const patient = await PatientModel.findById(observation.patient_id);
+      const user = await UserModel.findById(observation.user_id);
 
-  //     ObservationModel.create({
-  //       patient_id,
-  //       user_id,
-  //       code,
-  //       value,
-  //       date,
-  //       status,
-  //       category,
-  //       components
-  //     })
+      const components = await ObservationModel.findAllComponentsByPatient(
+        observation.patient_id
+      );
 
-  //     // newObservation
+      const baseLoinc = await loadLoincCsvToArray();
+      console.log({ user });
 
-  //     //   const patients = await PatientModel.findAll(); // seria mas eficiente tener un model y hacer la consulta directamente en la DB
-  //     //   // se toma como mpi que el paciente existe si tiene el mismo nombre, fecha de nacimiento y genero
-  //     //   const patientExist = patients.some(
-  //     //     (p) =>
-  //     //       p.name === patient.name &&
-  //     //       dayjs(p.birth_date).isSame(dayjs(patient.birth_date), "day") &&
-  //     //       p.gender === patient.gender
-  //     //   );
-
-  //     //   if (patientExist) {
-  //     //     throw new ValidationError("El paciente ya existe");
-  //     //   }
-
-  //     return newObservation;
-  //   } catch (error: any) {
-  //     console.error(
-  //       "ObservationService: Error al crear observacion fhir ",
-  //       error
-  //     );
-  //     throw error;
-  //   }
-  // },
+      const fhirObservation: fhirR4.Observation = {
+        resourceType: "Observation",
+        id: observation.id,
+        status: "final",
+        category: [
+          {
+            coding: [
+              {
+                system:
+                  "http://terminology.hl7.org/CodeSystem/observation-category",
+                code: observation.category,
+                display: observation.category,
+              },
+            ],
+          },
+        ],
+        code: {
+          coding: [
+            {
+              system: "http://loinc.org",
+              code: observation.code,
+              display: baseLoinc.find(
+                (loinc) => loinc.LOINC_NUM === observation.code
+              )?.COMPONENT,
+            },
+          ],
+          text: baseLoinc.find((loinc) => loinc.LOINC_NUM === observation.code)
+            ?.COMPONENT,
+        },
+        subject: {
+          reference: observation?.patient_id
+            ? `Patient/${observation?.patient_id}`
+            : undefined,
+          display: patient?.name,
+        },
+        performer: [
+          {
+            reference: "Practitioner/" + user?.id,
+            display: "Dr. " + user?.name,
+          },
+        ],
+        effectiveDateTime: observation.date ?? "",
+        component:
+          components?.map((component) => {
+            return {
+              code: {
+                coding: [
+                  {
+                    system: "http://loinc.org",
+                    code: component.code,
+                    display: baseLoinc.find(
+                      (loinc) => loinc.LOINC_NUM === component.code
+                    )?.COMPONENT,
+                  },
+                ],
+                text: baseLoinc.find(
+                  (loinc) => loinc.LOINC_NUM === component.code
+                )?.COMPONENT,
+              },
+              valueQuantity: {
+                value: 120,
+                unit: component.unit,
+                system: "http://loinc.org",
+                code: component.code,
+              },
+            };
+          }) || [],
+      };
+      return fhirObservation;
+    } catch (error: any) {
+      console.error(
+        "ObservationService: Error al obtener observaciones ",
+        error
+      );
+      throw error;
+    }
+  },
   async getObservations(patientId: string) {
     try {
       const observations = await ObservationModel.findAllByPatient(patientId);

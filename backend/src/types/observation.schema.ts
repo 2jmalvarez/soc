@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { getLoincSet } from "../utils/loincLoader";
+import { getLoinCodecSet } from "../utils/loincLoader";
 
 export const componentsObservationSchema = Joi.object({
   code: Joi.string()
@@ -7,7 +7,7 @@ export const componentsObservationSchema = Joi.object({
     .max(100)
     .required()
     .custom((value, helpers) => {
-      const loincSet = getLoincSet();
+      const loincSet = getLoinCodecSet();
       if (!loincSet.has(value)) return helpers.error("any.invalid");
       return value;
     })
@@ -42,7 +42,7 @@ export const baseObservationSchema = Joi.object({
     .max(100)
     .required()
     .custom((value, helpers) => {
-      const loincSet = getLoincSet();
+      const loincSet = getLoinCodecSet();
       if (!loincSet.has(value)) return helpers.error("any.invalid");
       return value;
     })

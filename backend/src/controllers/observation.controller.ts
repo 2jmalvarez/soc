@@ -5,6 +5,7 @@ import { idSchema } from "../types/patient.schema";
 import { baseObservationSchema } from "../types/observation.schema";
 import { NotFoundError } from "../services/error.service";
 import PatientService from "../services/patient.service";
+import ObservationService from "../services/observation.service";
 
 // Lista las observaciones de un paciente
 export const getObservations = async (req: Request, res: Response) => {
@@ -13,6 +14,20 @@ export const getObservations = async (req: Request, res: Response) => {
     const { id: patientId } = req.params;
 
     const patientObservations = await PatientService.getObservations(patientId);
+
+    RoutesService.responseSuccess(res, patientObservations);
+  } catch (error) {
+    RoutesService.responseError(res, error as any);
+  }
+};
+
+// Lista las observaciones de un paciente
+export const getFhirObservation = async (req: Request, res: Response) => {
+  try {
+    RoutesService.validationParams(req.params, idSchema);
+    const { id: observationId } = req.params;
+
+    const patientObservations = await ObservationService.getFhir(observationId);
 
     RoutesService.responseSuccess(res, patientObservations);
   } catch (error) {

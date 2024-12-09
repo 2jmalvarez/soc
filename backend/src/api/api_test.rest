@@ -132,3 +132,10 @@ Authorization: Bearer {{token}}
   "date":"2024-11-29T10:00:00Z"
 }
  
+
+### Ver observacion en Fhir
+GET {{baseUrl}}/observations/fhir/b96e59cf-ba79-4ef2-a7d4-c028d3344c7d
+Content-Type: application/json
+Authorization: Bearer {{token}}
+ 
+ 

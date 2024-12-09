@@ -41,6 +41,19 @@ const UserModel = {
       throw new Error("Error al buscar usuario");
     }
   },
+  // Método para buscar un usuario por su id
+  async findById(id: string): Promise<User | null> {
+    const query = "SELECT * FROM users WHERE id = $1";
+    const values = [id];
+
+    try {
+      const res = await pool.query(query, values);
+      return res.rows.length > 0 ? res.rows[0] : null; // Retorna el usuario si existe
+    } catch (err) {
+      console.error("Error al buscar usuario por id:", err);
+      throw new Error("Error al buscar usuario por id");
+    }
+  },
 };
 
 export default UserModel;
