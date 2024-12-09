@@ -1,28 +1,49 @@
 import { LoadingSpinner } from "../common/LoadingSpinner";
-import { Button } from "../ui";
+import { Button, Input } from "../ui";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { useToast } from "@/hooks/use-toast";
 import usePatientStore from "@/hooks/useStore";
 import { updateObservation } from "@/services/api";
-import { ObservationType } from "@/types/dto.type";
-import { PencilIcon } from "lucide-react";
+import { ComponentObservationTypeDto, ObservationType } from "@/types/dto.type";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { PencilIcon, PlusIcon } from "lucide-react";
 import { getSession } from "next-auth/react";
 import { useState } from "react";
+import { v4 } from "uuid";
+
+export interface EditObservationType {
+  id: string;
+  category: string;
+  code: string;
+  value: string;
+  date: string;
+  components: ComponentObservationTypeDto[];
+}
 
 export const EditObservationModal = ({
   observation,
 }: {
   observation: ObservationType;
 }) => {
-  const { patientObservations, setPatientObservations } = usePatientStore();
+  const {
+    patientObservations,
+    setPatientObservations,
+    observationsCategories,
+  } = usePatientStore();
   const { toast } = useToast();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -37,9 +58,19 @@ export const EditObservationModal = ({
     setNewObservation((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (
-    observation: Omit<ObservationType, "patient_id" | "user_id">
+  const handleInputComponentChange = (
+    index: number,
+    field: string,
+    value: string | number
   ) => {
+    setNewObservation((prev) => {
+      const newComponents = [...(prev?.components ?? [])];
+      newComponents[index] = { ...newComponents[index], [field]: value };
+      return { ...prev, components: newComponents };
+    });
+  };
+
+  const handleSubmit = async () => {
     const session = await getSession(); // Obtener la sesión del frontend
 
     if (!session?.accessToken) {
@@ -53,7 +84,14 @@ export const EditObservationModal = ({
         data: updatedObservation,
         error,
         message,
-      } = await updateObservation(session.accessToken, observation);
+      } = await updateObservation(session.accessToken, {
+        ...newObservation,
+        components:
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          newObservation.components?.map(({ id, observation_id, ...c }) => ({
+            ...c,
+          })) ?? [],
+      });
 
       if (error) {
         toast({
@@ -80,76 +118,209 @@ export const EditObservationModal = ({
       setCargando(false);
     }
   };
-
+  console.log({ newObservation });
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild className="cursor-pointer">
         <PencilIcon className="hover:text-green-500" />
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[825px] sm:max-h-[380px]">
         <DialogHeader>
           <DialogTitle>Editar observación</DialogTitle>
           <DialogDescription />
         </DialogHeader>
-        <form className="mt-4 space-y-4">
-          <div>
-            <label htmlFor="code" className="block font-semibold">
-              Código
-            </label>
-            <input
-              id="code"
-              name="code"
-              type="text"
-              value={newObservation.code}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="value" className="block font-semibold">
-              Valor
-            </label>
-            <input
-              id="value"
-              name="value"
-              type="text"
-              value={newObservation.value}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="date" className="block font-semibold">
-              Fecha
-            </label>
-            <input
-              id="date"
-              name="date"
-              type="date"
-              value={
-                newObservation.date &&
-                new Date(newObservation.date).toISOString().split("T")[0]
-              }
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </div>
-        </form>
-        <DialogFooter>
-          <Button
-            disabled={cargando}
-            onClick={() => handleSubmit(newObservation)}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            <div className="flex text-center">
-              {cargando && <LoadingSpinner color="text-white w-4 h-4" />}{" "}
-              Guardar
+        <div className="mt-4 space-y-4">
+          <div className="flex">
+            <div className="w-1/3 p-2 ">
+              <div>
+                <label htmlFor="category" className="block font-semibold">
+                  Categoría
+                </label>
+                <Select
+                  onValueChange={(category) =>
+                    setNewObservation((prev) => ({ ...prev, category }))
+                  }
+                  value={newObservation.category}
+                >
+                  <SelectTrigger className="w-[280px]">
+                    <SelectValue placeholder="Seleccioná una categoría" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {observationsCategories.map((category) => (
+                      <SelectItem value={category.code} key={v4()}>
+                        {category.display}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label htmlFor="code" className="block font-semibold">
+                  Código
+                </label>
+                <input
+                  id="code"
+                  name="code"
+                  type="text"
+                  value={newObservation.code}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="value" className="block font-semibold">
+                  Valor
+                </label>
+                <input
+                  id="value"
+                  name="value"
+                  type="text"
+                  value={newObservation.value}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="date" className="block font-semibold">
+                  Fecha
+                </label>
+                <input
+                  id="date"
+                  name="date"
+                  type="date"
+                  value={
+                    newObservation.date &&
+                    new Date(newObservation.date).toISOString().split("T")[0]
+                  }
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded"
+                  required
+                />
+              </div>
             </div>
-          </Button>
-        </DialogFooter>
+            <div className=" w-2/3 p-2 flex flex-col pt-8">
+              <div className="flex justify-end">
+                <Button
+                  variant={"outline"}
+                  onClick={() =>
+                    setNewObservation((prev) => ({
+                      ...prev,
+                      components: [
+                        ...(prev?.components ?? []),
+                        { code: "", value: 0, unit: "", id: v4() },
+                      ],
+                    }))
+                  }
+                >
+                  <PlusIcon className="mr-2" />
+                  Agregar componente
+                </Button>
+              </div>
+              <ScrollArea className="h-32 m-4 overflow-y-auto " type="always">
+                {newObservation.components?.map((c, i) => (
+                  <div
+                    key={c.id}
+                    className="flex justify-between  w-full p-1 border-2 rounded mt-2 px-4 bg-slate-100"
+                  >
+                    <div className="flex flex-col ">
+                      <label
+                        htmlFor={"code" + c.id}
+                        className="block font-semibold"
+                      >
+                        Código
+                      </label>
+                      <Input
+                        id={"code" + c.id}
+                        aria-label="Código"
+                        type="text"
+                        value={c.code}
+                        onChange={(e) =>
+                          handleInputComponentChange(i, "code", e.target.value)
+                        }
+                        className="font-semibold w-20 p-2 border rounded bg-white "
+                      />
+                    </div>
+
+                    <div className="flex w-full justify-end">
+                      <div className="flex flex-col px-2">
+                        <label
+                          htmlFor={"value" + c.id}
+                          className="block font-semibold"
+                        >
+                          Valor
+                        </label>
+                        <Input
+                          id={"value" + c.id}
+                          type="number"
+                          value={c.value}
+                          onChange={(e) =>
+                            handleInputComponentChange(
+                              i,
+                              "value",
+                              e.target.value
+                            )
+                          }
+                          className="font-semibold w-20 p-2 border rounded bg-white"
+                        />
+                      </div>
+                      <div className="flex flex-col px-2">
+                        <label
+                          htmlFor={"unit" + c.id}
+                          className="block font-semibold"
+                        >
+                          Unidad
+                        </label>
+                        <Input
+                          id={"unit" + c.id}
+                          type="text"
+                          value={c.unit}
+                          onChange={(e) =>
+                            handleInputComponentChange(
+                              i,
+                              "unit",
+                              e.target.value
+                            )
+                          }
+                          className="font-semibold w-20 p-2 border rounded bg-white"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="pl-4">
+                      <Button
+                        variant={"ghost"}
+                        size={"icon"}
+                        className="p-0 size-1"
+                        onClick={() => {
+                          setNewObservation((prev) => ({
+                            ...prev,
+                            components: prev?.components?.filter(
+                              (_, ii) => i !== ii
+                            ),
+                          }));
+                        }}
+                      >
+                        X
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </ScrollArea>
+              <Button
+                disabled={cargando}
+                onClick={() => handleSubmit()}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                <div className="flex text-center">
+                  {cargando && <LoadingSpinner color="text-white w-4 h-4" />}{" "}
+                  Guardar
+                </div>
+              </Button>
+            </div>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -41,10 +41,11 @@ export const CardObservation = ({
           </p>{" "}
         </div>
         <div className="w-auto">
+          <strong>Componentes</strong>
           <ScrollArea className="h-40" type="always">
             {observation.components?.map((c) => (
               <div key={v4()} className="mr-5">
-                <div className="flex flex-col bg-slate-300 m-2 p-2 rounded w-full">
+                <div className="flex flex-col bg-slate-100 m-2 p-2 rounded w-full">
                   <div className="flex  pr-2">
                     <strong>Código:</strong>
                     <div className="px-2">{c.code}</div>

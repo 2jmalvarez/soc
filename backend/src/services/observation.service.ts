@@ -1,4 +1,3 @@
-import { Observation } from "./../models/observation.fhir.model";
 import ObservationModel from "./../models/observation.model";
 import PatientModel, { Patient } from "../models/patient.model";
 import dayjs from "dayjs";

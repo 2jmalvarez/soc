@@ -17,7 +17,6 @@ export interface Component {
   id: string;
   observation_id: string;
   code: string;
-  display: string;
   value: number;
   unit: string;
 }
@@ -60,15 +59,14 @@ const ObservationModel = {
       // Inserta los componentes si los hay
       if (components && components.length > 0) {
         const queryComponent = `
-          INSERT INTO observation_components (id, observation_id, code, display, value, unit) 
-          VALUES ($1, $2, $3, $4, $5, $6)`;
+          INSERT INTO observation_components (id, observation_id, code,   value, unit) 
+          VALUES ($1, $2, $3, $4, $5)`;
         for (const component of components) {
           const componentId = uuidv4();
           await client.query(queryComponent, [
             componentId,
             observationId,
             component.code,
-            component.display,
             component.value,
             component.unit,
           ]);

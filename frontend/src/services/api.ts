@@ -1,3 +1,4 @@
+import { EditObservationType } from "@/components/observations/EditObservationModal";
 import { NewObservationType } from "@/components/observations/NewObservationModal";
 import { ObservationType } from "@/types/dto.type";
 import axios, { AxiosResponse, isAxiosError } from "axios";
@@ -36,7 +37,7 @@ export const api = axios.create({
 
 export async function addObservation(
   accessToken: string,
-  observation: NewObservationType & { patient_id: number }
+  observation: NewObservationType & { patient_id: string }
 ) {
   try {
     const response = await api.post("/api/observations", observation, {
@@ -53,12 +54,7 @@ export async function addObservation(
 
 export async function updateObservation(
   accessToken: string,
-  observation: {
-    code: string;
-    value: string;
-    date: string;
-    id: number;
-  }
+  observation: EditObservationType
 ) {
   try {
     const response = await api.put("/api/observations", observation, {

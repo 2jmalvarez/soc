@@ -1,23 +1,24 @@
 export type ObservationType = {
-  id: number;
+  id: string;
   code: string;
   value: string;
   date: string;
-  patient_id: number;
-  user_id: number;
+  patient_id: string;
+  user_id: string;
   category: string;
   components?: ComponentObservationTypeDto[];
 };
 
 export type ComponentObservationTypeDto = {
   id?: string;
+  observation_id?: string;
   code: string;
   value: number;
   unit: string;
 };
 
 export type PatientType = {
-  id: number;
+  id: string;
   name: string;
   gender: string;
   birth_date: string;

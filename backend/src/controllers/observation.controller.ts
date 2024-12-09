@@ -81,7 +81,7 @@ export const addObservationFhir = async (req: Request, res: Response) => {
       components,
     });
 
-    const observation = ObservationModel.create({
+    const observation = await ObservationModel.create({
       patient_id,
       user_id,
       code,
@@ -91,14 +91,6 @@ export const addObservationFhir = async (req: Request, res: Response) => {
       category,
       components,
     });
-
-    // const observation = await ObservationModel.create({
-    //   patientId: +patientId,
-    //   code,
-    //   value,
-    //   date,
-    //   user_id,
-    // });
 
     RoutesService.responseSuccess(res, observation, 201);
   } catch (error) {
@@ -129,6 +121,42 @@ export const updateObservation = async (req: Request, res: Response) => {
       user_id,
       category: observation.category,
       status: observation.status,
+    });
+
+    RoutesService.responseSuccess(res, editedObservation);
+  } catch (error) {
+    RoutesService.responseError(res, error as any);
+  }
+};
+
+export const updateObservationFhir = async (req: Request, res: Response) => {
+  try {
+    RoutesService.validationParams(req.params, idSchema);
+    RoutesService.validationBody(req.body, baseObservationSchema);
+    const { id: observationId } = req.params;
+    const {
+      code,
+      value,
+      date,
+      status = "final",
+      category,
+      components,
+    } = req.body;
+    const user_id = RoutesService.getUserId(req);
+
+    const observation = await ObservationModel.findOneById(observationId);
+    if (!observation) throw new NotFoundError("Observación no encontrada");
+
+    const editedObservation = await ObservationModel.update({
+      id: observationId,
+      code,
+      value,
+      date,
+      patient_id: observation.patient_id,
+      user_id,
+      category,
+      status,
+      components,
     });
 
     RoutesService.responseSuccess(res, editedObservation);
