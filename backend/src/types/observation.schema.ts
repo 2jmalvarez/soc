@@ -2,15 +2,25 @@ import Joi from "joi";
 import { getLoincSet } from "../utils/loincLoader";
 
 export const componentsObservationSchema = Joi.object({
-  code: Joi.string().min(1).max(100).required().messages({
-    "string.base": "El código del componente debe ser un texto",
-    "string.empty": "El código del componente no debe estar vacío",
-    "string.min":
-      "El código del componente debe tener al menos {#limit} caracteres",
-    "string.max":
-      "El código del componente no debe tener más de {#limit} caracteres",
-    "any.required": "El código del componente es un campo requerido",
-  }),
+  code: Joi.string()
+    .min(1)
+    .max(100)
+    .required()
+    .custom((value, helpers) => {
+      const loincSet = getLoincSet();
+      if (!loincSet.has(value)) return helpers.error("any.invalid");
+      return value;
+    })
+    .messages({
+      "string.base": "El código del componente debe ser un texto",
+      "string.empty": "El código del componente no debe estar vacío",
+      "string.min":
+        "El código del componente debe tener al menos {#limit} caracteres",
+      "string.max":
+        "El código del componente no debe tener más de {#limit} caracteres",
+      "any.required": "El código del componente es un campo requerido",
+      "any.invalid": "Código no encontrado en LOINC.",
+    }),
   value: Joi.number().precision(2).min(0).required().messages({
     "number.base": "El valor debe ser un número",
     "number.min": "El valor debe ser al menos {#limit}",
@@ -33,7 +43,6 @@ export const baseObservationSchema = Joi.object({
     .custom((value, helpers) => {
       const loincSet = getLoincSet();
       if (!loincSet.has(value)) return helpers.error("any.invalid");
-
       return value;
     })
     .messages({
