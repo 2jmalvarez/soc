@@ -49,7 +49,7 @@ export const addObservation = async (req: Request, res: Response) => {
       components,
     });
 
-    RoutesService.responseSuccess(res, observation, 201);
+    RoutesService.responseSuccess(res, { ...observation, components }, 201);
   } catch (error) {
     console.log({ error });
 

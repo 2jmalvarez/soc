@@ -19,7 +19,8 @@ export const componentsObservationSchema = Joi.object({
       "string.max":
         "El código del componente no debe tener más de {#limit} caracteres",
       "any.required": "El código del componente es un campo requerido",
-      "any.invalid": "Código no encontrado en LOINC.",
+      "any.invalid":
+        "El código '{#value}' del componente no fue encontrado en LOINC.",
     }),
   value: Joi.number().precision(2).min(0).required().messages({
     "number.base": "El valor debe ser un número",
@@ -53,7 +54,7 @@ export const baseObservationSchema = Joi.object({
       "string.max":
         "El código de la observación no debe tener más de {#limit} caracteres",
       "any.required": "El código de la observación es un campo requerido",
-      "any.invalid": "Código no encontrado en LOINC.",
+      "any.invalid": "El código '{#value}' no fue encontrado en LOINC.",
     }),
 
   value: Joi.alternatives()
