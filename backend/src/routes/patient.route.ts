@@ -22,6 +22,6 @@ router.post("/:id/observations", authenticate, addObservation); // Crear una nue
 
 router.post("/", authenticate, createPatient); // crear paciente
 router.delete("/:id", authenticate, deletePatient); // eliminar paciente
-router.put("/:id", authenticate, updatePatient); // eliminar paciente
+router.put("/:id", authenticate, updatePatient); // editar paciente
 
 export default router;
