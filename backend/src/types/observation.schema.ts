@@ -1,12 +1,15 @@
 import Joi from "joi";
+import { getLoincSet } from "../utils/loincLoader";
 
 export const componentsObservationSchema = Joi.object({
   code: Joi.string().min(1).max(100).required().messages({
-    "string.base": "El código debe ser un texto",
-    "string.empty": "El código no debe estar vacío",
-    "string.min": "El código debe tener al menos {#limit} caracteres",
-    "string.max": "El código no debe tener más de {#limit} caracteres",
-    "any.required": "El código es un campo requerido",
+    "string.base": "El código del componente debe ser un texto",
+    "string.empty": "El código del componente no debe estar vacío",
+    "string.min":
+      "El código del componente debe tener al menos {#limit} caracteres",
+    "string.max":
+      "El código del componente no debe tener más de {#limit} caracteres",
+    "any.required": "El código del componente es un campo requerido",
   }),
   value: Joi.number().precision(2).min(0).required().messages({
     "number.base": "El valor debe ser un número",
@@ -23,15 +26,26 @@ export const componentsObservationSchema = Joi.object({
 });
 
 export const baseObservationSchema = Joi.object({
-  code: Joi.string().min(3).max(100).required().messages({
-    "string.base": "El código de la observación debe ser un texto",
-    "string.empty": "El código de la observación no debe estar vacío",
-    "string.min":
-      "El código de la observación debe tener al menos {#limit} caracteres",
-    "string.max":
-      "El código de la observación no debe tener más de {#limit} caracteres",
-    "any.required": "El código de la observación es un campo requerido",
-  }),
+  code: Joi.string()
+    .min(3)
+    .max(100)
+    .required()
+    .custom((value, helpers) => {
+      const loincSet = getLoincSet();
+      if (!loincSet.has(value)) return helpers.error("any.invalid");
+
+      return value;
+    })
+    .messages({
+      "string.base": "El código de la observación debe ser un texto",
+      "string.empty": "El código de la observación no debe estar vacío",
+      "string.min":
+        "El código de la observación debe tener al menos {#limit} caracteres",
+      "string.max":
+        "El código de la observación no debe tener más de {#limit} caracteres",
+      "any.required": "El código de la observación es un campo requerido",
+      "any.invalid": "Código no encontrado en LOINC.",
+    }),
 
   value: Joi.alternatives()
     .try(Joi.string().min(1).max(500), Joi.number().precision(2).min(0))

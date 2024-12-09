@@ -30,10 +30,18 @@ const PatientService = {
   async getObservations(patientId: string) {
     try {
       const observations = await ObservationModel.findAllByPatient(patientId);
-      console.log({ observations });
-
+      const components = await ObservationModel.findAllComponentsByPatient(
+        patientId
+      );
       const patient = await PatientModel.findById(patientId);
-      return { ...patient, observations };
+
+      return {
+        ...patient,
+        observations: observations.map((o) => ({
+          ...o,
+          components: components.filter((c) => c.observation_id === o.id),
+        })),
+      };
     } catch (error: any) {
       console.error("PatientService: Error al obtener observaciones ", error);
       throw error;

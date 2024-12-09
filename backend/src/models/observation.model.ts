@@ -8,6 +8,15 @@ const ObservationModel = {
     const { rows } = await pool.query(query, [patientId]);
     return rows;
   },
+  async findAllComponentsByPatient(
+    patientId: string
+  ): Promise<ObservationComponents[]> {
+    const query = `
+      SELECT * FROM observation_components
+      WHERE observation_id in (SELECT id FROM observations WHERE patient_id = $1)`;
+    const { rows } = await pool.query(query, [patientId]);
+    return rows;
+  },
 
   async create({
     patient_id,

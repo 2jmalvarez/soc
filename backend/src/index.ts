@@ -1,6 +1,7 @@
 import app from "./app";
 import dotenv from "dotenv";
 import pool from "./db/postgres";
+import { loadLoincCodes } from "./utils/loincLoader";
 
 // Cargar variables de entorno
 dotenv.config();
@@ -12,6 +13,10 @@ const startServer = async () => {
     // Sincronizar la base de datos
     await pool.query("SELECT 1");
     console.log("Conexión a la base de datos exitosa.");
+
+    // Cargar códigos LOINC
+    await loadLoincCodes("src/db/csv/Loinc.csv");
+    console.log("Códigos LOINC cargados en memoria.");
 
     // Iniciar el servidor
     app.listen(PORT, () => {

@@ -6,6 +6,14 @@ export type ObservationType = {
   patient_id: number;
   user_id: number;
   category: string;
+  component?: ComponentObservationTypeDto[];
+};
+
+export type ComponentObservationTypeDto = {
+  id?: string;
+  code: string;
+  value: number;
+  unit: string;
 };
 
 export type PatientType = {

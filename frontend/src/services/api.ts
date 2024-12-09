@@ -1,3 +1,4 @@
+import { NewObservationType } from "@/components/observations/NewObservationModal";
 import { ObservationType } from "@/types/dto.type";
 import axios, { AxiosResponse, isAxiosError } from "axios";
 import { signOut } from "next-auth/react";
@@ -35,12 +36,7 @@ export const api = axios.create({
 
 export async function addObservation(
   accessToken: string,
-  observation: {
-    code: string;
-    value: string;
-    date: string;
-    patient_id: number;
-  }
+  observation: NewObservationType & { patient_id: number }
 ) {
   try {
     const response = await api.post("/api/observations", observation, {

@@ -5,14 +5,12 @@ import { idSchema } from "../types/patient.schema";
 import { baseObservationSchema } from "../types/observation.schema";
 import { NotFoundError } from "../services/error.service";
 import PatientService from "../services/patient.service";
-import ObservationService from "../services/observation.service";
 
 // Lista las observaciones de un paciente
 export const getObservations = async (req: Request, res: Response) => {
   try {
     RoutesService.validationParams(req.params, idSchema);
     const { id: patientId } = req.params;
-    console.log({ patientId });
 
     const patientObservations = await PatientService.getObservations(patientId);
 
